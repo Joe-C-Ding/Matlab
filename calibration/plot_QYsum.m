@@ -33,11 +33,6 @@ for i = 1:2
     ax.YLim = [1 1e5];
     
     legend(s{i}, 'FontSize', 12);
-    
-%     xlim([-5 5]);
-%     ylim([55 80]);
-%     xlabel(['Y', num2str(i), ' (kN)']);
-%     ylabel(['Q', num2str(i), ' (kN)']);
 end
 
 set(0,'DefaultFigureWindowStyle','normal');

@@ -1,3 +1,6 @@
+test.m
+**/*.asv
+
 alxe/orig/
 alxe/**/*.mat
 calibration/email_sent/

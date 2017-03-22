@@ -1,4 +1,4 @@
-close all
+% close all
 home
 
 start_test = tic;
@@ -20,7 +20,7 @@ files = {
 
 M = length(files);
 %           A B C D E F G
-chose = ~~[ 1 1 1 1 1 1 1 ];
+chose = ~~[ 1 0 1 1 1 0 1 ];
 
 % construct the eqution with the form of 'F = EU'
 F = [];     % in which, 'F' represents the loads (i.e. Q1 & Q2).
