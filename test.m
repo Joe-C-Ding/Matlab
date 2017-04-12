@@ -1,11 +1,10 @@
 start_tic = tic;
-figure(1);
-clf; ax = gca;
+gcf;
+clf(1); ax = axes('parent', 1);
 
 hold(ax, 'on');
 grid(ax, 'on');
 
-p = 5.2;
-ret2accrual(p)
+
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
