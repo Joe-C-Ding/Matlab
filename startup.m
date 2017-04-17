@@ -2,9 +2,10 @@ start_tic = tic;
 
 format shortG;
 format compact;
-% parpool local 4;
+% parpool('local');
 
 addpath(genpath([pwd, '\utilities']));
+set(groot,'DefaultFigureWindowStyle','docked');
 
 if exist('startup.mat', 'file')
     load startup.mat

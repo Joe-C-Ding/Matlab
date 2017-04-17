@@ -1,6 +1,8 @@
 start_tic = tic;
-figure(1);
-clf; ax = gca;
+gcf;    % make sure figure1 is exsist
+clf(1); ax = axes('parent', 1);
+hold(ax, 'on');
+grid(ax, 'on');
 
 s = [525 500 475 450 400];
 Nf = 10 .^ [
@@ -28,7 +30,8 @@ d = (0.1:0.05:10).';
 
 [N, D] = meshgrid(n, d);
 [Z, ~, finfo] = fd(n,d);
-surface(ax, N, D, Z); hold(ax, 'on');
+h = surface(ax, N, D, Z); hold(ax, 'on');
+h.LineStyle = 'none';
 % ax.XLabel = 'life';
 % ax.YLabel = 'degradation';
 
