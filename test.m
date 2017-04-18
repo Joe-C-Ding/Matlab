@@ -4,20 +4,20 @@ clf(1); ax = axes('parent', 1);
 hold(ax, 'on');
 grid(ax, 'on');
 
-bond = 10;
-x = linspace(-bond, bond);
-[X, Y] = meshgrid(x, x);
+x = [
+    525 5.33
+    500 5.50
+    475 5.59
+    450 5.82
+    400 6.15
+];
+y = x(:,2);
+x = log(x(:,1));
 
-Z = 100*(Y - X.^2).^2 + (1-X).^2;
+p = polyfit(x, y, 1);
+p(1) = -p(1);
+p(2) = exp(p(2));
+disp(p);
 
-h = surf(ax, X, Y, Z);
-h.LineStyle = 'none';
-
-[zmin, idx] = min(Z, [], 2);
-plot3(x(idx), x, zmin, 'r');
-
-xlabel('X');
-ylabel('Y');
-zlim([0, 200]);
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

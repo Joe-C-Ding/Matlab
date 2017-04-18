@@ -21,12 +21,27 @@ Nf = exp([
     5.7712	5.9253	5.9787	6.2305	6.4996
 ]);
 
-dist = fitdata(Nf, 'logn');
-m = arrayfun(@(x)x.mean(), dist);
-[m, c] = sn_curve(s, m)
+fns = fitdata(Nf, 'logn');
+m = arrayfun(@(x)x.mean(), fns);
+[m, c] = sn_curve(s, m);
 
-fn = gen_fn(s, dist);
-dist = fn(s);
+fn = gen_fn(s, fns);
+
+loads = [
+    240 1e5
+    350 8e4
+    400 2.5e4
+    500 1e4
+    400 2.5e4
+    350 8e4
+    240 1e5
+];
+fns = fn(loads(:,1));
+blocks = length(fns);
+% damage = zeors(length(dist), 1);
+for i = 1:length(fns)
+%     damage(i) = fns(i)(loads(i, 2));
+end
 
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

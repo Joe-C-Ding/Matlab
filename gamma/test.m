@@ -1,6 +1,9 @@
-start_test = tic;
+start_tic = tic;
+clf(gcf); ax = axes('parent', gcf);
+hold(ax, 'on');
+grid(ax, 'on');
 
-al = xlsread('2-36 crack.xls', 1, 'A1:B999');
+pa = makedist('exp', 1/0.05);
+a = trunc_rnd(pa, 0, 34, 5000);
 
-
-toc(start_test);
+fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
