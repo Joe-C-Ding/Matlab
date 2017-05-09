@@ -1,13 +1,10 @@
 test_start = tic;
 t = 3e8;
 
-warnStruct = warning;
-warning('off', 'MATLAB:integral2:maxFunEvalsFail');
-
 % choose = 2;
 % a = A(choose), b = B(choose), l = L(choose)
 
-itvl = linspace(3, 15, 30);
+itvl = linspace(1, 8, 30);
 F = zeros(length(itvl), 2);
 
 for i = 1:length(itvl)
