@@ -33,7 +33,8 @@ d = linspace(0.1, 1);
 
 [N, D] = meshgrid(n, d);
 [Z, ZF, finfo] = fn(n,d);
-surface(ax, N, D, Z); hold(ax, 'on');
+h = surface(ax, N, D, Z); hold(ax, 'on');
+h.LineStyle = 'none';
 % ax.XLabel = 'life';
 % ax.YLabel = 'degradation';
 
