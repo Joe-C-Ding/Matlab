@@ -5,6 +5,7 @@ format compact;
 % parpool local 4;
 
 addpath(genpath([pwd, '\utilities']));
+set(groot, 'DefaultFigureWindowStyle', 'docked')
 
 if exist('startup.mat', 'file')
     load startup.mat
