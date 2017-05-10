@@ -27,7 +27,7 @@ af = normrnd(50, 5, B, 1);
 kc = normrnd(3952, 48.67, B, 1);
 kth = normrnd(172.56, 8.31, B, 1);
 
-F = normrnd(287*3, 20, B, 1);
+F = normrnd(287*3, 20, B, 1);   % 这里均值翻了三倍
 K = normrnd(0.38, 0.0038, B, 1);
 m = normrnd(1.5454, 0.05, B, 1);
 C = 4.6957e-4;
@@ -56,14 +56,19 @@ for i = 1:B
     end
     N(i) = n;
 end
-
 N = sort(convert * N);
-xlswrite(excel_name, N);
 
 %% 画图
-ecdf(ax, N, 'function','survivor', 'alpha',alpha, 'bounds','on')
+[R, Na, Rlo, Rup] = ecdf(ax, N, 'function','survivor', 'alpha',alpha);
+ecdf(ax, N, 'function','survivor', 'alpha',alpha, 'bounds', 'on');
 xlabel('N_{allow}');
 ylabel('R');
+
+%% 导出数据
+xlswrite(excel_name, 'N', 1);
+xlswrite(excel_name, N, 1, 'A2');
+xlswrite(excel_name, {'N_allow', 'R_lower', 'R', 'R_upper'}, 2);
+xlswrite(excel_name, [Na, Rlo, R, Rup], 2, 'A2');
 
 %% 计算耗时
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
