@@ -1,6 +1,5 @@
 start_tic = tic;
 close all;
-set(0,'DefaultFigureWindowStyle','docked');
 
 listing = dir('rainflow\*.mat');
 listing = {listing.name}';
@@ -35,5 +34,4 @@ for i = 1:2
     legend(s{i}, 'FontSize', 12);
 end
 
-set(0,'DefaultFigureWindowStyle','normal');
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
