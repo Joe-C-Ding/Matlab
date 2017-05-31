@@ -4,20 +4,30 @@ clf(1); ax = axes('parent', 1);
 hold(ax, 'on');
 grid(ax, 'on');
 
-x = [
-    525 5.33
-    500 5.50
-    475 5.59
-    450 5.82
-    400 6.15
-];
-y = x(:,2);
-x = log(x(:,1));
+x = data(:,1);
+y1 = data(:,2);
+y2 = data(:,3);
 
-p = polyfit(x, y, 1);
-p(1) = -p(1);
-p(2) = exp(p(2));
-disp(p);
+z1 = trapz(x, y1);
+z2 = trapz(x, y2);
+y1 = y1/z1;
+y2 = y2/z2;
+
+data(:,4) = y1;
+data(:,5) = y2;
+
+% plot(x, y1, x, y2);
+
+e = 1e-4;
+y1(y1 < e) = nan;
+y2(y2 < e) = nan;
+plot(x, y1, x, y2);
+
+[~,x1] = findpeaks(y1, x, 'MinPeakProminence', 0.005);
+[ max(x(~isnan(y1))) min(x(~isnan(y1))) x1' ]
+
+[~,x2] = findpeaks(y2, x, 'MinPeakProminence', 0.005);
+[ max(x(~isnan(y2))) min(x(~isnan(y2))) x2' ]
 
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
