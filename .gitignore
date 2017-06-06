@@ -1,7 +1,8 @@
-test.m
+**/test.m
 **/*.asv
 
 alxe/orig/
 alxe/**/*.mat
 calibration/email_sent/
 calibration/**/*.mat
+calibration/rainflow/other/*.xlsx
