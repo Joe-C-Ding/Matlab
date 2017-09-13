@@ -21,7 +21,14 @@ if strcmpi(dist, 'logn') || strcmpi(dist, 'Lognormal')
         para(i, :) = lognfit(data(:,i));
         distribution(i) = makedist(dist, para(i, 1), para(i, 2));
     end
-% elseif
+elseif strcmpi(dist, 'wbl') || strcmpi(dist, 'Weibull')
+    dist = 'Weibull';
+    para = zeros(size(data, 2), 2);
+    distribution(size(data, 2), 1) = prob.WeibullDistribution;
+    for i = 1:size(data, 2)
+        para(i, :) = wblfit(data(:,i));
+        distribution(i) = makedist(dist, para(i, 1), para(i, 2));
+    end
 end
 
 if isplot

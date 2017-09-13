@@ -1,8 +1,7 @@
 start_tic = tic;
 gcf;    % make sure figure1 is exsist
 clf(1); ax = axes('parent', 1);
-hold(ax, 'on');
-grid(ax, 'on');
+hold(ax, 'on'); grid(ax, 'on');
 
 ax.YScale = 'log';
 ax.XScale = 'log';
@@ -38,7 +37,7 @@ loads = [
 ];
 fns = fn(loads(:,1));
 blocks = length(fns);
-% damage = zeors(length(dist), 1);
+damage = zeros(length(fns), 1);
 for i = 1:length(fns)
 %     damage(i) = fns(i)(loads(i, 2));
 end

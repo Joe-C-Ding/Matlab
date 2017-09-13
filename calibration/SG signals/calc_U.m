@@ -1,7 +1,10 @@
-% close all
-home
-
 start_test = tic;
+gcf;
+clf(1); ax = axes('parent', 1);
+hold(ax, 'on');
+grid(ax, 'on');
+
+relative = true;
 
 files = {
     'AAAA071.mat'	%1
@@ -20,7 +23,7 @@ files = {
 
 M = length(files);
 %           A B C D E F G
-chose = ~~[ 1 0 1 1 1 0 1 ];
+chose = ~~[ 1 1 1 1 1 1 1 ];
 
 % construct the eqution with the form of 'F = EU'
 F = [];     % in which, 'F' represents the loads (i.e. Q1 & Q2).
@@ -54,25 +57,37 @@ R_1 = norm(F(:,1)-res_calc(:,1))
 R_2 = norm(F(:,2)-res_calc(:,2))
 R_calc = norm(F(:)-res_calc(:))
 
-Error = res_calc - F;
-
-subplot(2,1,1);
-plot(TimeAxis, F(:,1), 'g', TimeAxis, res_calc(:,1), 'k--', 'LineWidth', 2);
-grid on;
-% xlabel('Time [s]'); 
-ylabel('Force [kN]');
-% title('Q_1 calculated by yours U_{calc}');
-legend('Q_1 calc', 'Q_1 ref', 'Location', 'NE');
-ylim([30 120]); xlim([0 TAend]);
-
-subplot(2,1,2);
-plot(TimeAxis, Error(:,1), 'r', [0 TAend], [0 0], 'k:', 'LineWidth', 2);
-grid on;
-% plot(TimeAxis, res_calc(:,2), 'r', TimeAxis, F(:,2), 'k', 'LineWidth', 2);
-xlabel('Time [s]');
-ylabel('Error [kN]');
-% title('Q_2 calculated by yours U_{calc}');
-% legend('Q_2 calc', 'Q_2 ref', 'Location', 'SE');
-xlim([0 TAend]);
+if relative
+    E = F - res_calc;
+    E_rel = E ./ F;
+    
+    subplot(2,1,1);
+    plot(TimeAxis, E(:,1), TimeAxis, E(:,2), 'LineWidth', 2);
+    grid on;
+    ylabel('error [kN]');
+    legend('Q_1', 'Q_2', 'Location', 'NE');
+    xlim([0 TAend]);
+    
+    subplot(2,1,2);
+    plot(TimeAxis, E_rel(:,1), TimeAxis, E_rel(:,2), 'LineWidth', 2);
+    grid on;
+    ylabel('relative error [%]');
+    legend('Q_1', 'Q_2', 'Location', 'NE');
+    xlim([0 TAend]);
+else
+    subplot(2,1,1);
+    plot(TimeAxis, F(:,1), 'g', TimeAxis, res_calc(:,1), 'k--', 'LineWidth', 2);
+    grid on;
+    ylabel('Q_1 [kN]');
+    legend('Q_{1 calc}', 'Q_{1 ref}', 'Location', 'NW');
+    xlim([0 TAend]);
+    
+    subplot(2,1,2);
+    plot(TimeAxis, F(:,2), 'g', TimeAxis, res_calc(:,2), 'k--', 'LineWidth', 2);
+    grid on;
+    ylabel('Q_2 [kN]');
+    legend('Q_{2 calc}', 'Q_{2 ref}', 'Location', 'NW');
+    xlim([0 TAend]);
+end
 
 toc(start_test);

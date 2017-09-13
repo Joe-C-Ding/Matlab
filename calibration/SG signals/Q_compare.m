@@ -1,4 +1,8 @@
 start_test = tic;
+gcf;
+clf(1); ax = axes('parent', 1);
+hold(ax, 'on');
+grid(ax, 'on');
 
 files = {
     'AAAA071.mat'	%1

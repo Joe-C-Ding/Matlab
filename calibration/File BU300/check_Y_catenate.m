@@ -1,15 +1,19 @@
-close all
-home
+gcf;
+clf(1); ax = axes('parent', 1);
+hold(ax, 'on');
+grid(ax, 'on');
 
 start_test = tic;
+U = U_calc;
 
+relative = true;
 %%
 % original from Lucchini
 % E1 = 4.356743078628495e+004, E2 = 8.716744601440540e+004
-Uo = [
-    -2.686726154670896   3.364596960245444  -0.018423174324946  -0.043461241546464
-	 0.183195308682250   0.286275884183867   4.402696179886554  -0.524075333851218
-];
+% Uo = [
+%     -2.686726154670896   3.364596960245444  -0.018423174324946  -0.043461241546464
+% 	 0.183195308682250   0.286275884183867   4.402696179886554  -0.524075333851218
+% ];
 
 %{
 % E1 = 8.346562701364707e+004, E2 = 9.680943578111116e+004
@@ -72,7 +76,7 @@ YC = [];
 WC = [];
 
 for i = 1:length(files);
-    load(files{i}, 'Time', 'WY', 'WW');
+    load(files{i}, 'Time', 'WY', 'WW', 'phi');
     T = [T; mt + Time];
     mt = T(end);
     
@@ -81,23 +85,38 @@ for i = 1:length(files);
 end
 
 YS = WC * U';
-
-E = YS - YC;
-
 %%
-subplot(3,1,1)
-plot(T,YC(:,1),'k',T,YS(:,1),'b--','LineWidth',2),grid
-axis ([0 T(end) min(YC(:,1))-5 max(YC(:,1))+5])
-xlabel('Time [s]'),ylabel('[kN]'),legend('Y1 real','Y1 calc')
+if relative
+    YC = YC(:,1) + YC(:,2);
+    YS = YS(:,1) + YS(:,2);
+    E = YC - YS;
+    subplot(2,1,1)
+    plot(T, E, 'LineWidth',2),grid
+    axis ([0 T(end) min(E)-5 max(E)+5])
+    ylabel('[kN]'), legend('absolute error')
 
-subplot(3,1,2)
-plot(T,YC(:,2),'k',T,YS(:,2),'r--','LineWidth',2),grid
-axis ([0 T(end) min(YC(:,2))-5 max(YC(:,2))+5])
-xlabel('Time [s]'),ylabel('[kN]'),legend('Y2 real','Y2 calc')
+    E_rel = E ./ YC;
+    E_rel(YC < .5) = 0;
+    subplot(2,1,2)
+    plot(T, E_rel, 'LineWidth',2),grid
+    xlim([0 T(end)])
+    xlabel('Time [s]'),ylabel('[%]'), legend('relative error')
+else
+    subplot(3,1,1)
+    plot(T,YC(:,1),'k',T,YS(:,1),'b--','LineWidth',2),grid
+    axis ([0 T(end) min(YC(:,1))-5 max(YC(:,1))+5])
+    xlabel('Time [s]'),ylabel('[kN]'),legend('Y1 real','Y1 calc')
 
-subplot(3,1,3)
-plot(T,YC(:,1)+YC(:,2),'k',T,YS(:,1)+YS(:,2),'m--','LineWidth',2),grid
-axis ([0 T(end) min(YC(:,1)+YC(:,2))-5 max(YC(:,1)+YC(:,2))+5])
-xlabel('Time [s]'),ylabel('[kN]'),legend('Y1+Y2 real','Y1+Y2 calc')
+    subplot(3,1,2)
+    plot(T,YC(:,2),'k',T,YS(:,2),'r--','LineWidth',2),grid
+    axis ([0 T(end) min(YC(:,2))-5 max(YC(:,2))+5])
+    xlabel('Time [s]'),ylabel('[kN]'),legend('Y2 real','Y2 calc')
+
+    subplot(3,1,3)
+    plot(T,YC(:,1)+YC(:,2),'k',T,YS(:,1)+YS(:,2),'m--','LineWidth',2),grid
+    axis ([0 T(end) min(YC(:,1)+YC(:,2))-5 max(YC(:,1)+YC(:,2))+5])
+    xlabel('Time [s]'),ylabel('[kN]'),legend('Y1+Y2 real','Y1+Y2 calc')
+end
+
 
 toc(start_test);
