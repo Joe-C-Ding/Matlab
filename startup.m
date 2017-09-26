@@ -5,7 +5,13 @@ format compact;
 % parpool local 4;
 
 addpath(genpath([pwd, '\utilities']));
-set(groot, 'DefaultFigureWindowStyle', 'docked')
+
+set(groot, 'DefaultFigureWindowStyle', 'docked');
+set(groot, 'DefaultLineLineWidth', 2);
+set(groot, 'DefaultLineMarkerSize', 10);
+set(groot, 'DefaultAxesFontsize', 14);
+set(groot, 'DefaultTextInterpreter', 'latex');
+set(groot, 'DefaultAxesTickLabelInterpreter', 'latex');
 
 if exist('startup.mat', 'file')
     load startup.mat
