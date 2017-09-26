@@ -5,8 +5,22 @@ format compact;
 % parpool local 4;
 
 addpath(genpath([pwd, '\utilities']));
-set(groot, 'DefaultFigureWindowStyle', 'docked')
 
+%% graphical default setting
+set(groot, 'DefaultFigureWindowStyle', 'docked');
+set(groot, 'DefaultAxesNextPlot', 'add');
+set(groot, 'DefaultAxesXGrid', 'on');
+set(groot, 'DefaultAxesYGrid', 'on');
+
+set(groot, 'DefaultLineLineWidth', 2);
+set(groot, 'DefaultLineMarkerSize', 10);
+set(groot, 'DefaultAxesFontsize', 14);
+
+set(groot, 'DefaultTextInterpreter', 'latex');
+set(groot, 'DefaultTextHorizontalAlignment', 'center');
+set(groot, 'DefaultAxesTickLabelInterpreter', 'latex');
+
+%% load `startup.mat` or create it.
 if exist('startup.mat', 'file')
     load startup.mat
     
