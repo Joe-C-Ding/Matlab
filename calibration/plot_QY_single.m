@@ -1,7 +1,7 @@
 start_tic = tic;
 close all
 
-file = 'rainflow\other\A_QY_retGarage.mat';
+file = 'rainflow\other\QYcycles_all.mat';
 load(file);
 
 Qedge = 0:0.5:120;
@@ -10,6 +10,10 @@ Yedge = -30:0.25:30;
 
 QYsum = QY;
 QYsum(QYsum < 1e-5) = 0;
+
+K = trapz(Qedge, trapz(Yedge, QYsum, 2));
+QYsum(:,:,1) = QYsum(:,:,1) / K(:,:,1);
+QYsum(:,:,2) = QYsum(:,:,2) / K(:,:,2);
 
 for i = 1:2
     figure(i)
@@ -24,8 +28,8 @@ for i = 1:2
     colormap('jet');
     colorbar;
     
-    xlim([-10 10]);
-    ylim([40 65]);
+    xlim([-5 5]);
+    ylim([43 60]);
     xlabel(['Y', num2str(i), ' (kN)']);
     ylabel(['Q', num2str(i), ' (kN)']);
 end
@@ -38,9 +42,10 @@ for i = 1:2
     hold(ax, 'on');
     grid(ax, 'on');
     
-    Y = sum(QYsum, i);
+    Y = trapz(X{3-i}, QYsum, i);
     plot(ax, X{i}, Y(:,:,1), 'linewidth', 2);
     plot(ax, X{i}, Y(:,:,2), 'linewidth', 2);
+    trapz(X{i}, Y)
     
     Y1 = Y(:,:,1); Y2 = Y(:,:,2);
     prominence = 0.01;
