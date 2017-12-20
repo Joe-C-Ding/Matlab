@@ -1,6 +1,10 @@
 start_test = tic;
+gcf;
+clf(1); ax = axes('parent', 1);
+hold(ax, 'on');
+grid(ax, 'on');
 
-I = 2;
+I = 1;
 
 files = {
     'AAAA017rid.mat'	%1 'Left'
@@ -44,6 +48,6 @@ U_calc = (E\F)';
 [b,bint,r,rint,stats] = regress(F(:,I), [ones(length(E), 1) E(:,[2*I-1 2*I])]);
 
 res_calc = E * U_calc';
-plot(res_calc(:,I), r, 'x');
+scatter(res_calc(:,I), r, 'x');
 
 toc(start_test);

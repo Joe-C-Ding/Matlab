@@ -1,8 +1,10 @@
 start_tic = tic;
 clf;
 
-syms x y z
-[y, z] = solve([x+y+z==100, 3*x+2*y+z/3==100], [y, z])
+digits(50);
 
+f = exp(sqrt(sym(163))*sym(pi));
+vpa(f)
+double(f - round(f))
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
