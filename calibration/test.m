@@ -1,6 +1,6 @@
 start_tic = tic;
 
-file = 'rainflow/other/QYcycles_curve.xlsx';
+files = {files.name}';
 [pathstr,name,ext] = fileparts(file);
 savepath = pwd;
 cd(pathstr);

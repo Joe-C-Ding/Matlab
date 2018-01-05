@@ -1,7 +1,9 @@
 start_tic = tic;
 
-i = 8;
-file = ['rainflow/weight/' list{i}];
+list = listing;
+for i = 1:length(listing)
+    
+file = ['rainflow/cut/' list{i}];
 [pathstr,name,ext] = fileparts(file);
 savepath = pwd;
 cd(pathstr);
@@ -27,5 +29,7 @@ elseif type == 2
     save([name '.mat'], 'QY');
 end
 cd(savepath);
+
+end
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

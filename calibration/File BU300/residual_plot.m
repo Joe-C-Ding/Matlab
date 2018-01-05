@@ -40,8 +40,8 @@ TAend = 0;
 for i = 1:M
     load(files{i}, 'WY', 'WW');
 
-    F = [F; WY];
-    E = [E; WW];
+    F = [F; WY];    %#ok<AGROW>
+    E = [E; WW];    %#ok<AGROW>
 end
 
 U_calc = (E\F)';

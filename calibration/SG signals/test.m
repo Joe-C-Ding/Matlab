@@ -1,5 +1,9 @@
-start_tic = tic;
-ax = cla('reset');
+start_test = tic;
+clf;
+
+i = 12;
+side = 2;
+inter = (25001-100):35001;
 
 files = {
     'AAAA071.mat'	%1
@@ -15,29 +19,37 @@ files = {
     'AAAA128.mat'	%11
     'AAAA131.mat'	%12
 };
-M = length(files);
 
-i = 1;
-% for i = 1:1
-    load(files{i}, 'WW', 'P', 'Time', 'FY', 'v', 'fsamp');
+load(files{i});
+U = (WA \ WQ)'
 
-%     F = [F; WQ];
-%     E = [E; WA(:,chose)];
-%     
-%     TimeAxis = [TimeAxis; TAend + Time];
-%     TAend = TimeAxis(end);
-% end
+b = ones(1,100)/100;
+WA = WA(inter,:);
+WQ = WQ(inter,:);
+WQ = filter(b, 1, WQ);
+Time = Time(inter,:);
+FY = filter(b, 1, FY(inter,:));
 
-f = mean(v2f(v));
-s = floor(fsamp/4/f);
-PP = P - WW(:,1);
-P2 = [zeros(s,1); PP(1:end-s, 1)];
+QS = WQ(:,side);
+QC = WA*U';
+QC = QC(:,side);
 
+E = QS-QC;
+RE = E./QS;
 
-% p = find(Time > 19 & Time <= 21);
-% mp = mean(P(p))
+subplot(3,1,1);
+plot(Time, QS, 'r', Time, QC, 'b--'); grid on
+% xlim([45 75]);
+% ylim([44 50]);
 
-plot(ax, Time, P, 'b', Time, abs(PP) + abs(P2)+WW(:,1));
-xlim([19 19.5]);
+subplot(3,1,2);
+plot(Time, WA); grid on;
 
-toc(start_tic);
+subplot(3,1,3);
+plot(Time, FY);
+
+xlabel('Time [s]');
+% xlim([45 75]);
+% ylim([-10 3]);
+
+toc(start_test);

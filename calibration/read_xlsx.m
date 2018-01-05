@@ -5,12 +5,12 @@ clf; ax = gca;
 pwd_save = pwd;
 
 try 
-    cd('D:\italy_data');
+    cd('rainflow/cut/');
     listing = dir('.');
 
-    s1 = '2014-07-';
-    tf = strncmp({listing.name}, s1, length(s1));
-    listing(~tf) = [];
+%     s1 = '2014-07-';
+%     tf = strncmp({listing.name}, s1, length(s1));
+%     listing(~tf) = [];
     listing = {listing.name}';
 catch ME
     fprintf('%s: %d\n', ...

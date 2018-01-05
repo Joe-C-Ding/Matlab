@@ -1,5 +1,7 @@
 start_tic = tic;
-ax = cla('reset');
+clf;
+
+i = 4;
 
 files = {
     'AAAA017rid.mat'	%1 'Left'
@@ -23,17 +25,9 @@ files = {
 };
 M = length(files);
 
-i = 1;
 load(files{i});
 
-f = mean(v2f(v));
-s = floor(fsamp/4/f);
-PP = P - WW(:,1);
-P2 = [zeros(s,1); PP(1:end-s, 1)];
-X = abs(PP)+abs(P2)+WW(:,1);
-
-
-plot(ax, Time, FY(:,1)./X, Time, FY(:,1)./WW(:,1), 'r', Time, FY(:,1));
-xlim([10 50]);
+plot(Time, P, Time, Q);
+legend('P', 'Q');
 
 toc(start_tic);

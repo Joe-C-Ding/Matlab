@@ -1,9 +1,11 @@
 start_tic = tic;
 close all
 
-% i = 4;
-% file = ['rainflow\weight\' list{i}];
-% load(file);
+if ~exist('QY1', 'var')
+    i = 4;
+    file = ['rainflow\weight\' list{i}];
+    load(file);
+end
 
 Qedge = 0:0.5:120;
 Yedge = -30:0.25:30;

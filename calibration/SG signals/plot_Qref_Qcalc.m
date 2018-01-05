@@ -1,6 +1,7 @@
 start_test = tic;
+clf;
 
-i = 10;
+i = 12;
 I = 2;
 
 files = {
@@ -21,35 +22,41 @@ files = {
 load(files{i}, 'WQ', 'WA', 'Time', 'FY');
 
 % load U.mat
-U = U_calc;
-% U = (WA \ WQ)'
+% U = U_calc;
+U = (WA \ WQ)'
 
-[b,bint,r,rint,stats] = regress(WQ(:,I), [ones(length(WA), 1) WA]);
-b', bint', stats
+% [b,bint,r,rint,stats] = regress(WQ(:,I), [ones(length(WA), 1) WA]);
+% b', bint', stats
 
 Time = compress(Time, 500);
-WQ = compress(WQ(:,I), 500);
+WQ = compress(WQ, 500);
 WA = compress(WA, 500);
 FY = compress(FY, 500);
 
+QS = WQ(:,I);
+QC = WA*U';
+QC = QC(:,I);
+E = QS-QC;
+RE = E./QS;
+
 subplot(2,1,1);
-plot(Time, WQ, 'r', Time, WA*U(I,:)', 'b--', 'LineWidth', 2); grid on
+plot(Time, QS, 'r', Time, QC, 'b--'); grid on
 ylabel(['Q_' num2str(I) ' [kN]']);
-legend(['Q_' num2str(I) ' ref'], ['Q_' num2str(I) ' calc'], ...
-    'Location', 'NE', 'Orientation', 'horizontal');
+% legend(['Q_' num2str(I) ' ref'], ['Q_' num2str(I) ' calc'], ...
+%     'Location', 'NE', 'Orientation', 'horizontal');
 title(['标定工况' num2str(i)]);
 
-xlim([45 75]);
-ylim([44 50]);
+% xlim([45 75]);
+% ylim([44 50]);
 
 subplot(2,1,2);
-plot(Time, FY, 'b', 'LineWidth', 2); grid on;
-xlim([45 75]);
-ylabel('FY [kN]'); 
-legend('FY', 'Location', 'SE');
+plotyy(Time, E, Time, RE); grid on;
+% xlim([45 75]);
+% ylabel('FY [kN]'); 
+% legend('FY', 'Location', 'SE');
 
 xlabel('Time [s]');
-xlim([45 75]);
-ylim([-10 3]);
+% xlim([45 75]);
+% ylim([-10 3]);
 
 toc(start_test);

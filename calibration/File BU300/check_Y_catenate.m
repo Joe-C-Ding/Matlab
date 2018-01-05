@@ -1,9 +1,5 @@
-gcf;
-clf(1); ax = axes('parent', 1);
-hold(ax, 'on');
-grid(ax, 'on');
-
 start_test = tic;
+clf;
 U = U_calc;
 
 relative = true;
@@ -79,6 +75,7 @@ for i = 1:length(files);
     load(files{i}, 'Time', 'WY', 'WW', 'phi');
     T = [T; mt + Time];
     mt = T(end);
+    [i, mt]
     
     YC = [YC; WY];
     WC = [WC; WW];
@@ -91,14 +88,14 @@ if relative
     YS = YS(:,1) + YS(:,2);
     E = YC - YS;
     subplot(2,1,1)
-    plot(T, E, 'LineWidth',2),grid
+    plot(T, E, 'LineWidth',2),grid on
     axis ([0 T(end) min(E)-5 max(E)+5])
     ylabel('[kN]'), legend('absolute error')
 
-    E_rel = E ./ YC;
-    E_rel(YC < .5) = 0;
+    E_rel = abs(E ./ YC);
+    E_rel(abs(YC) < .5) = 0;
     subplot(2,1,2)
-    plot(T, E_rel, 'LineWidth',2),grid
+    plot(T, E_rel, 'LineWidth',2),grid on
     xlim([0 T(end)])
     xlabel('Time [s]'),ylabel('[%]'), legend('relative error')
 else

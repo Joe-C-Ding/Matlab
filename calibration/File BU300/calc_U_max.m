@@ -21,8 +21,8 @@ files = {
     'AAAA115rid.mat'	%18 'Right'
 };
 
-%           P Q R S
-chose = ~~[ 1 1 1 1 ];
+%                 P Q R S
+chose = logical([ 1 1 1 1 ]);
 
 M = length(files);
 
@@ -53,7 +53,7 @@ b, bint, stats
 [b,bint,r,rint,stats] = regress(F(:,2), [ones(length(E), 1) E]);
 b, bint, stats
 
-%{
+
 res_calc = E * u';
 R_1 = norm(F(:,1)-res_calc(:,1))
 R_2 = norm(F(:,2)-res_calc(:,2))
@@ -76,6 +76,6 @@ xlabel('Time [s]'), ylabel('Error [kN]')..., title('Y_2 calculated by yours U_{c
 % legend('Y_2 calc', 'Y_2 ref', 'Location', 'SE');
 ylim([-5.5 3]);
 xlim([0 TAend]);
-%}
+
 
 toc(start_test);
