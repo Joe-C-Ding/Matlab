@@ -5,11 +5,11 @@ a = 1e4;
 b = [2, 3, 4];
 lb = length(b);
 
-N(lb, 1) = prob.WeibullDistribution();
+N = cell(lb, 1);
 s = cell(lb, 1);
 for i = 1:lb
     X = prob.WeibullDistribution(a, b(i));
-    N(i) = X;
+    N{i} = X;
 %     fplot(@X.pdf(x), [0, 2e4]);
 
     x = linspace(eps, 0.001);

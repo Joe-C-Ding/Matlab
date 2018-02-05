@@ -29,11 +29,10 @@ switch fh.function
 end
 
 opt = optimoptions('fsolve', 'Display', 'off');
-if verbose
-    [para,fval,exitflag,output] = fsolve(func, x0, opt);
-    fval, exitflag, output	%#ok
-else
-    para = fsolve(func, x0, opt);
+[para,fval,exitflag,output] = fsolve(func, x0, opt);
+
+if verbose || exitflag <= 0
+    para, fval, exitflag, output	%#ok
 end
 
 a = para(1);

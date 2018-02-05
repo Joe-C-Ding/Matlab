@@ -13,6 +13,7 @@ func = @(x)wblstat_aux(x) - [M, V];
 x0 = [0 0];
 x0(1) = hypot(mu, sigma) / sqrt(0.95);
 x0(2) = 1;
+x0
 opt = optimoptions('fsolve', 'Display', 'off');
 
 if verbose
