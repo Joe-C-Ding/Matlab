@@ -11,6 +11,7 @@ set(groot, 'DefaultFigureWindowStyle', 'docked');
 set(groot, 'DefaultAxesNextPlot', 'add');   % hold on
 set(groot, 'DefaultAxesXGrid', 'on');       % grid on
 set(groot, 'DefaultAxesYGrid', 'on');
+set(groot, 'DefaultAxesBox', 'on');
 
 % default size
 set(groot, 'DefaultLineLineWidth', 2);

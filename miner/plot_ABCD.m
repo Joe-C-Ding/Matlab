@@ -10,32 +10,32 @@ pd = prob.NormalDistribution();
 conf = 0.8;
 z = pd.icdf(1-conf);
 
-x = linspace(0, 1, 1e3);
+x = linspace(0, 1);
 X = pd.icdf(1-x);
 Y = 2*z - X;
 y = 1-pd.cdf(Y);
 y(end) = 0;
 
-fill( ... % C
-    [x, 1, conf, conf, 0, 0], ...
-    [y, 0, 0, conf, conf, 1], ...
-    156/256 * [1 1 1], 'LineStyle', 'none' ...
-);
-fill( ... % D
-    [x, 1, 1, conf, conf, 0], ...
-    [y, 0, conf, conf, 1, 1], ...
-    207/256 * [1 1 1], 'LineStyle', 'none' ...
-);
+% fill( ... % C
+%     [1, conf, conf, 0, 0, x], ...
+%     [0, 0, conf, conf, 1, y], ...
+%     156/256 * [1 1 1], 'LineStyle', 'none' ...
+% );
+% fill( ... % D
+%     [x, 1, 1, conf, conf, 0], ...
+%     [y, 0, conf, conf, 1, 1], ...
+%     207/256 * [1 1 1], 'LineStyle', 'none' ...
+% );
 
 plot([conf conf], [0 1], 'r--');
-plot([0 1], [conf conf], 'r--');
-hxy = plot(x, y, 'b');
+hr = plot([0 1], [conf conf], 'r--');
+hxy = plot(x, y);
 
 grid off;
-h = legend(hxy, '$x+y=d_{0.8}$');
+h = legend([hxy, hr], '$D_1+D_2=d_1+d_2$', '$R=0.8$');
 h.Location = 'southwest';
 h.FontSize = 12;
-xlabel('$u$'); ylabel('$v$');
+xlabel('$D_1 / u$'); ylabel('$D_2 / v$');
 
 text(0.4, 0.4, '$A$');
 text(0.9, 0.9, '$B$');
