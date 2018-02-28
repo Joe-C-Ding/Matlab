@@ -7,3 +7,4 @@ calibration/email_sent/
 calibration/**/*.mat
 calibration/rainflow/other/*.xlsx
 calibration/ncode/
+*.eps

@@ -36,6 +36,7 @@ h = legend([hxy, hr], '$D_1+D_2=d_1+d_2$', '$R=0.8$');
 h.Location = 'southwest';
 h.FontSize = 12;
 xlabel('$D_1 / u$'); ylabel('$D_2 / v$');
+daspect([1 1 1]);
 
 text(0.4, 0.4, '$A$');
 text(0.9, 0.9, '$B$');
