@@ -1,8 +1,8 @@
 start_tic = tic;
 clf;
 
-s1 = 0.4;
-s2 = 0.6;
+s1 = 1;
+s2 = 0.5;
 
 X = prob.LognormalDistribution(0, s1);
 Y = prob.LognormalDistribution(0, s2);
@@ -18,6 +18,7 @@ Sxy = @(r, rs, X, Y)integral(@(u)Lxy(u, r, rs, X, Y), 0, 1);
 
 Sv = @(r, rs)integral(@(u)L(u, r, rs), 0, 1, 'ArrayValued', 1);
 Svz = @(r, rs)integral(@(u)Lz(u, r, rs), 0, 1, 'ArrayValued', 1);
+Svxy = @(r, rs, X, Y)integral(@(u)Lxy(u, r, rs, X, Y), 0, 1, 'ArrayValued', 1);
 
 if 0    % v
     rs = 1;
@@ -47,6 +48,17 @@ elseif 0    % S1-S2 by rs
     
     s = strsplit(num2str(rs, '$\\eta=%.1f$\n'));
     legend(s);
+    
+elseif 0    % S(R)
+    r = linspace(0, 1);
+    rs = 0.5;
+    
+    S = Sv(r, rs);
+    plot(r, S);
+    
+    plot([0 1], [0 1], 'k--');
+    xlabel('$R$');
+    ylabel('$S$');
     
 elseif 0    % s1 by s2
     rs = 1;
@@ -81,7 +93,7 @@ elseif 0    % s1 by s2
 elseif 0    %** eta by s1
     rs = linspace(0.01, 1, 31);
     s1 = [0.1 0.2 0.3 0.5 0.7 1 1.2];
-    s2 = 0.4;
+    s2 = 0.5;
     
     R = zeros(length(s1), length(rs));
     Y.sigma = s2;
@@ -102,10 +114,10 @@ elseif 0    %** eta by s1
     ht = text(0.1*ones(length(s1),1), R(idx,:), s);
     set(ht, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
     
-elseif 0    % s1 by eta, increase with s1
+elseif 1    % s1 by eta, increase with s1
     rs = linspace(0.01, 1, 6);
     s1 = linspace(0.01, 1, 21);
-    s2 = 0.5;
+    s2 = 1;
     
     R = zeros(length(s1), length(rs));
     Y.sigma = s2;
@@ -124,7 +136,7 @@ elseif 0    % s1 by eta, increase with s1
     ht = text(0.98*ones(length(rs),1), R(end,:), s);
     set(ht, 'HorizontalAlignment', 'right');
     
-elseif 1    % max by eta, increase with eta
+elseif 0    % max by eta, increase with eta
     rs = [0.1 0.3 0.5 1];
     s1 = linspace(0.01, 1, 30);
     

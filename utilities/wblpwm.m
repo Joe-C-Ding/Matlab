@@ -17,8 +17,12 @@ b = [sum(x), j*x/(n-1), (j.*(j-1))*x /(n-1)/(n-2)] ./ n;
 
 c = (3*b(3)-b(1))/(2*b(2)-b(1));
 func = @(k)(1-3^(-k))./(1-2^(-k)) - c;
-shp = 1/fzero(func, 0.5);
+[x,~,exitflag] = fzero(func, 0.5);
+if exitflag <= 0
+    error('wblpwm: cannot solve parameters.');
+end
 
+shp = 1/x;
 scl = (b(1)-2*b(2)) / (1-2^(-1/shp)); % for temporary use
 loc = b(1) - scl;
 scl = scl / gamma(1+1/shp);
