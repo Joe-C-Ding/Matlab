@@ -1,5 +1,5 @@
 start_tic = tic;
-clf;
+close all;
 
 if ~exist('U', 'var') || ~isstruct(U)
     s = [525 500 475 450 400];
@@ -16,16 +16,16 @@ if ~exist('U', 'var') || ~isstruct(U)
         5.7712	5.9253	5.9787	6.2305	6.4996
     ];
 
-    [U, V, p] = psn_curve(s, Nf);
+    [U, V, para] = psn_curve(s, Nf);
 end
 
 spct = [
-    200 1e5
-    250 8e4
-    300 2.5e4
-    350 1e4
-    400 5e3
-    450 1e3
+    200 2e5
+    250 8e5
+    300 2.5e5
+    350 1e5
+    400 5e4
+    450 1e4
 ];
 
 s = spct(:,1);
@@ -35,22 +35,19 @@ sumn = sum(n);
 F = [0.1 0.3 0.4 0.5 0.7 0.9];
 N = zeros(length(s), length(F));
 for i = 1:length(F)
-    N(:,i) = U.sr(s, F(i));
+    N(:,i) = U.sf(s, F(i));
 end
 
-wblplot(N);
+N;
 d = bsxfun(@rdivide, n, N);
-D = sum(d, 1)
+D = sum(d, 1);
 Np = sumn ./ D;
 
-sample = 1e4;
-W = wblrnd(p.d, p.b, length(s), sample) + p.l;
-Nmc = exp(bsxfun(@rdivide, W, log(s)-p.C) + p.B);
-dmc = bsxfun(@rdivide, n, Nmc);
+sample = 1e5;
+dmc = sn_rnd(s, n, para, sample);
 Dmc = sum(dmc);
-[f, x] = ecdf(Dmc);
-xlim([0, 0.04]);
-
-D = interp1(f, x, 1-F)
+[fd, d] = ecdf(Dmc);
+Dp = interp1(fd, d, 1-F);
+[F; D; Dp]
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
