@@ -1,8 +1,8 @@
 function y = phi( x )
-%PHI y = phi( x )
+%PHI y = phi( x ), i.e. y = normcdf(x, 0, 1);
 %   此处显示详细说明
 
-y = 0.5 + 0.5*erf( x / sqrt(2) );
+y = normcdf(x,0,1);
 
 end
 

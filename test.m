@@ -1,26 +1,11 @@
 start_tic = tic;
 clf;
 
-G = @(x)exp(-(-x).^12);
-Ginv = @(G)-(-log(G))^(1/12);
+p = linspace(eps, 1);
 
-aa = 0.25;
-bb = 0.75;
-b = Ginv(aa);
-a = Ginv(bb) - b;
-Gf = @(x)G(a*x+b);
+y1 = log(1+p);
+y2 = p;
+plot(p, y1, 'r', p, y2);
 
-n = 100;
-bn = norminv(aa.^(1./n))
-an = norminv(bb.^(1./n)) - bn
-
-x = linspace(-5, 10).';
-y = (x - an)./bn;
-y(y > -b/a) = nan;
-F = Gf(y);
-plot(x, F);
-
-x = max(randn(n, 1000), [], 1);
-ecdf(x);
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
