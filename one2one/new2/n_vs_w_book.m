@@ -21,8 +21,9 @@ Nf = [
 ];
 
 dist = {'Normal', 'wbl'};
+type = 2;
 for i = 1:length(dist)
-    [U,V,paras] = psn_curve(Nf, s, dist{i}, false);
+    [U,V,paras] = psn_curve(Nf, s, dist{i}, [1 1], 0, type, 1);
     paras
     paras.pd
     v = reshape(V.ns(Nf, s), [], 1);

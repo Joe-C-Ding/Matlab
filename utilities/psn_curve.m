@@ -1,5 +1,8 @@
-function [ U, V, para ] = psn_curve( N, S, dist, is_log, need_plot, verboss )
-%PSN_CURVE [ U, V, para ] = psn_curve( N, S, dist, is_log, need_plot )
+function [ U, V, para, stat ] = psn_curve( N, S, dist, is_log, need_plot, type, verboss )
+%PSN_CURVE [ U, V, para ] = psn_curve( N, S, dist, is_log, need_plot, type, verboss )
+%   type: 1 -> book method; 2 -> my_loss; 3 -> mle;
+%   is_log: `slog' or [`nlog', `slog']
+%
 % returned result is:
 %   U.v: @(v) statistic v -> F, ie cdf of v
 %   U.ns = @(n, s) -> F
@@ -12,12 +15,16 @@ function [ U, V, para ] = psn_curve( N, S, dist, is_log, need_plot, verboss )
 %
 %   para: B, m, C; l, d, b; s_handle
 
-narginchk(3, 6);
+narginchk(3, 7);
 
 if ~isvector(S) || size(N, 2) ~= length(S)
     error('psn_curve: size mismatch.');
 end
 S = reshape(S,1,[]);
+
+if nargin < 3 || isempty(dist) || ~ischar(dist)
+    dist = 'wbl';
+end
 
 if nargin < 4 || isempty(is_log)
     is_log = [true false];
@@ -29,7 +36,11 @@ if nargin < 5 || isempty(need_plot)
     need_plot = false;
 end
 
-if nargin < 6 || isempty(verboss)
+if nargin < 6 || isempty(type)
+    type = 2;
+end
+
+if nargin < 7 || isempty(verboss)
     verboss = false;
 end
 
@@ -48,48 +59,42 @@ para = struct;
 para.s_handle = s_handle;
 para.n_handle = n_handle;
 
-%% calc para
-logN = n_handle(N);
-logS = ones(size(N,1), 1) * s_handle(S);
+persistent bad_cnt;
+if isempty(bad_cnt)
+    bad_cnt = 0;
+end
 
-us = mean(logN)';
-s = logS(1,:)';
+%% calc para
+logN = sort(n_handle(N),1);
+logS = s_handle(S);
+
+n = size(logN, 1);
+Necdf = ((1:n).'-0.3) ./ (n+0.4);
+
+us = mean(logN).';
+s = logS.';
 x0 = [s us ones(length(us),1)]\(us.*s);
 x0 = [s us-x0(1) ones(length(us),1)]\(us.*s);
-x0(3) = [];
+if type ~= 1
+    x0(3) = [];
+end
 
-    function l = loss(x)  
-        v = reshape((logN-x(1)).*(logS-x(2)), [], 1);
-        try
-            if strcmpi(dist, 'wbl')
-%                 [ shp, scl, loc ]  = wblpwm(v);
-%                 pd = struct;
-%                 pd.cdf = @(v) wblcdf(v-loc,scl,shp);
-                pd = fitdist(v, 'Weibull');
-            else
-                pd = fitdist(v, dist);
-            end
-        catch ME
-            warning(ME.message);
-            l = inf; return;
-        end
-
-        n = numel(v);
-        f = ((1:n).'-0.3) ./ (n+0.4);
-
-        l = norm(f-pd.cdf(sort(v)));
-    end
-
-% opt = optimset('MaxFunEvals', 5000, 'MaxIter', 5000);
-[x,~,exitflag,output] = fminsearch(@loss, x0);
+opt = optimset('MaxFunEvals', 8000, 'MaxIter', 8000);
+loss = get_loss();
+[x,fval,exitflag,output] = fminsearch(loss, x0, opt);
 if verboss
-    disp(output);
+    fval    %#ok
+    output  %#ok
 end
 if exitflag <= 0
     error('psn_curve: cannot solve parameters of U.');
+elseif output.iterations >= 200 || output.funcCount >= 200
+    bad_cnt = bad_cnt + 1;
 end
 
+
 %% make reture value
+stat = bad_cnt;
 para.B = x(1); para.C = x(2);
 
 V = struct;
@@ -104,6 +109,9 @@ if is_log(1)
 else
     V.sv = @(s, v) para.B + v./(para.s_handle(s)-para.C);
 end
+
+v = bsxfun(@times, logN-x(1), logS-x(2));
+v = reshape(v, [], 1);
 
 if strcmpi(dist, 'wbl')
     [ shp, scl, loc ]  = wblpwm(v);
@@ -160,6 +168,64 @@ if need_plot
     if is_log(1)
         set(gca, 'xscale', 'log');
     end
+end
+
+%%
+function loss = get_loss()    
+    switch type
+        case 1
+            loss = @book_loss;
+        case 2    % norm(ecdf - cdf) for each `s'.
+            loss = @my_loss;
+        case 3    % mle
+            loss = @mle_loss;
+    end
+end
+
+%%
+function loss = my_loss(x)
+    v = bsxfun(@times, logN-x(1), logS-x(2));
+    try
+        if strcmpi(dist, 'wbl')
+            [shp, scl, loc]  = wblpwm(v(:));
+            pd = struct;
+            pd.cdf = @(v) wblcdf(v-loc,scl,shp);
+%             pd = fitdist(v(v>0), 'weibull');
+        else
+            pd = fitdist(v(:), dist);
+        end
+    catch ME
+        warning(ME.message);
+        loss = inf; return;
+    end
+
+    loss = bsxfun(@minus, Necdf, pd.cdf(v));
+    loss = norm(loss(:));
+end
+
+
+function loss = book_loss(x)
+    loss = bsxfun(@minus, logN-x(1), x(3)./(logS-x(2)));
+    loss = norm(loss(:));
+end
+
+
+function loss = mle_loss(x)
+    v = bsxfun(@times, logN-x(1), logS-x(2));
+    try
+        if strcmpi(dist, 'wbl')
+            [shp, scl, loc]  = wblpwm(v(:));
+            pd = struct;
+            pd.negloglik = wbllike([scl shp], v(:)-loc);
+        else
+            pd = fitdist(v(:), dist);
+        end
+    catch ME
+        warning(ME.message);
+        loss = inf; return;
+    end
+
+    loss = pd.negloglik;
 end
 
 end
