@@ -49,45 +49,46 @@ para.s_handle = s_handle;
 para.n_handle = n_handle;
 
 %% calc para
-logN = n_handle(N);
-logS = ones(size(N,1), 1) * s_handle(S);
+logN = sort(n_handle(N), 1);
+logS = s_handle(S);
+Necdf = ((1:size(N,1)).' - 0.3) ./ (size(N,1)+0.4);
 
 us = mean(logN)';
-s = logS(1,:)';
+s = logS.';
 x0 = [s us ones(length(us),1)]\(us.*s);
 x0 = [s us-x0(1) ones(length(us),1)]\(us.*s);
 x0(3) = [];
 
     function l = loss(x)  
-        v = reshape((logN-x(1)).*(logS-x(2)), [], 1);
+        v = bsxfun(@times, logN-x(1), logS-x(2));
         try
             if strcmpi(dist, 'wbl')
 %                 [ shp, scl, loc ]  = wblpwm(v);
 %                 pd = struct;
 %                 pd.cdf = @(v) wblcdf(v-loc,scl,shp);
-                pd = fitdist(v, 'Weibull');
+                pd = fitdist(v(:), 'Weibull');
             else
-                pd = fitdist(v, dist);
+                pd = fitdist(v(:), dist);
             end
         catch ME
             warning(ME.message);
             l = inf; return;
         end
 
-        n = numel(v);
-        f = ((1:n).'-0.3) ./ (n+0.4);
-
-        l = norm(f-pd.cdf(sort(v)));
+        l = bsxfun(@minus, Necdf, pd.cdf(v));
+        l = norm(l(:), 2);
     end
 
 % opt = optimset('MaxFunEvals', 5000, 'MaxIter', 5000);
-[x,~,exitflag,output] = fminsearch(@loss, x0);
+[x,fval,exitflag,output] = fminsearch(@loss, x0);
 if verboss
     disp(output);
 end
 if exitflag <= 0
     error('psn_curve: cannot solve parameters of U.');
 end
+
+[Necdf pd.cdf(v)]
 
 %% make reture value
 para.B = x(1); para.C = x(2);
@@ -106,7 +107,7 @@ else
 end
 
 if strcmpi(dist, 'wbl')
-    [ shp, scl, loc ]  = wblpwm(v);
+    [ shp, scl, loc ]  = wblpwm(v(:));
     pdw = makedist('weibull', scl, shp);
 
     pd = struct;
@@ -122,7 +123,7 @@ if strcmpi(dist, 'wbl')
     
     pd.random = @(varargin) pdw.random(varargin) + loc;
 else
-    pd = fitdist(v, dist);
+    pd = fitdist(v(:), dist);
 end
 para.pd = pd;
 

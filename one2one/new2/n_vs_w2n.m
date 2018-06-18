@@ -41,7 +41,7 @@ for i = 1:length(dist)
     end
     
     plot(n_plot, s_plot);
-    ylim([300 550]);
+%     ylim([300 550]);
     set(gca, 'xscale', 'log');
 end
 
