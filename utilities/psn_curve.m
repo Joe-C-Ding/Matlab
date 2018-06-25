@@ -18,7 +18,9 @@ function [ U, V, para, output, cnt ] = psn_curve( N, S, dist, is_log, need_plot,
 narginchk(3, 6);
 
 if ~isvector(S) || size(N, 2) ~= length(S)
-    error('psn_curve: size mismatch.');
+    if ~strcmp(dist, 'get_stat')
+        error('psn_curve: size mismatch.');
+    end
 end
 S = reshape(S,1,[]);
 
@@ -61,6 +63,10 @@ if isempty(bad)
     bad.init = 0;
     bad.solve = 0;
     bad.fit = 0;
+end
+if strcmp(dist, 'get_stat')
+    U = {}; V = {}; para = {}; output = {}; cnt = bad;
+    return
 end
 
 %% calc para

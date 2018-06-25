@@ -16,8 +16,8 @@ w = prob.WeibullDistribution(scl, shp);
 s = [0.95  0.9 0.825 0.75 0.675];
 ns = length(s);
 
-sample = 15;
-N = 1e4;
+sample = 50;
+N = 3000;
 
 x = zeros(N, 5);
 y = zeros(N, 2);
@@ -70,7 +70,7 @@ for i = 1:2
     fprintf('%s\t[%d, %d, %d, %d, %d]\n', label{i}, iqry);
 end
 
-bad
+[~,~,~,~,bad] = psn_curve([],[],'get_stat')
 
 %%
 % file = sprintf('type%d_result', type);
