@@ -1,5 +1,5 @@
-function [ U, V, para, stat ] = psn_curve( N, S, dist, is_log, need_plot, type, verboss )
-%PSN_CURVE [ U, V, para ] = psn_curve( N, S, dist, is_log, need_plot, type, verboss )
+function [ U, V, para, output, cnt ] = psn_curve( N, S, dist, is_log, need_plot, type)
+%PSN_CURVE [ U, V, para, output ] = psn_curve( N, S, dist, is_log, need_plot, type)
 %   type: 1 -> book method; 2 -> my_loss; 3 -> mle;
 %   is_log: `slog' or [`nlog', `slog']
 %
@@ -15,7 +15,7 @@ function [ U, V, para, stat ] = psn_curve( N, S, dist, is_log, need_plot, type, 
 %
 %   para: B, m, C; l, d, b; s_handle
 
-narginchk(3, 7);
+narginchk(3, 6);
 
 if ~isvector(S) || size(N, 2) ~= length(S)
     error('psn_curve: size mismatch.');
@@ -40,10 +40,6 @@ if nargin < 6 || isempty(type)
     type = 2;
 end
 
-if nargin < 7 || isempty(verboss)
-    verboss = false;
-end
-
 if is_log(1)
     n_handle = @reallog;
 else
@@ -59,42 +55,19 @@ para = struct;
 para.s_handle = s_handle;
 para.n_handle = n_handle;
 
-persistent bad_cnt;
-if isempty(bad_cnt)
-    bad_cnt = 0;
+persistent bad;
+if isempty(bad)
+    bad = struct;
+    bad.init = 0;
+    bad.solve = 0;
+    bad.fit = 0;
 end
 
 %% calc para
 logN = sort(n_handle(N),1);
 logS = s_handle(S);
 
-n = size(logN, 1);
-Necdf = ((1:n).'-0.3) ./ (n+0.4);
-
-us = mean(logN).';
-s = logS.';
-x0 = [s us ones(length(us),1)]\(us.*s);
-x0 = [s us-x0(1) ones(length(us),1)]\(us.*s);
-if type ~= 1
-    x0(3) = [];
-end
-
-opt = optimset('MaxFunEvals', 8000, 'MaxIter', 8000);
-loss = get_loss();
-[x,fval,exitflag,output] = fminsearch(loss, x0, opt);
-if verboss
-    fval    %#ok
-    output  %#ok
-end
-if exitflag <= 0
-    error('psn_curve: cannot solve parameters of U.');
-elseif output.iterations >= 200 || output.funcCount >= 200
-    bad_cnt = bad_cnt + 1;
-end
-
-
-%% make reture value
-stat = bad_cnt;
+[x, output] = est_para();
 para.B = x(1); para.C = x(2);
 
 V = struct;
@@ -113,24 +86,29 @@ end
 v = bsxfun(@times, logN-x(1), logS-x(2));
 v = reshape(v, [], 1);
 
-if strcmpi(dist, 'wbl')
-    [ shp, scl, loc ]  = wblpwm(v);
-    pdw = makedist('weibull', scl, shp);
+try
+    if strcmpi(dist, 'wbl')
+        [ shp, scl, loc ]  = wblpwm(v);
+        pdw = makedist('weibull', scl, shp);
 
-    pd = struct;
-    pd.loc = loc; pd.scl = scl; pd.shp = shp;
-    
-    pd.mean = pdw.mean - loc;
-    pd.std = pdw.std;
-    pd.var = pdw.var;
-    
-    pd.cdf = @(v) pdw.cdf(v-loc);
-    pd.pdf = @(v) pdw.pdf(v-loc);
-    pd.icdf = @(v) pdw.icdf(v) + loc;
-    
-    pd.random = @(varargin) pdw.random(varargin) + loc;
-else
-    pd = fitdist(v, dist);
+        pd = struct;
+        pd.loc = loc; pd.scl = scl; pd.shp = shp;
+
+        pd.mean = pdw.mean - loc;
+        pd.std = pdw.std;
+        pd.var = pdw.var;
+
+        pd.cdf = @(v) pdw.cdf(v-loc);
+        pd.pdf = @(v) pdw.pdf(v-loc);
+        pd.icdf = @(v) pdw.icdf(v) + loc;
+
+        pd.random = @(varargin) pdw.random(varargin) + loc;
+    else
+        pd = fitdist(v, dist);
+    end
+catch ME
+    bad.fit = bad.fit + 1;
+    rethrow(ME);
 end
 para.pd = pd;
 
@@ -144,6 +122,7 @@ U.randv = @(sample) pd.random(sample, 1);
 U.rands = @(n, sample) V.nv(n*ones(sample, 1), U.randv(sample));
 U.randn = @(s, sample) V.sv(s*ones(sample, 1), U.randv(sample));
 
+cnt = bad;
 %% plot
 if need_plot
     figure;
@@ -171,19 +150,64 @@ if need_plot
 end
 
 %%
-function loss = get_loss()    
+function [x, output] = est_para()
+    us = mean(logN).';
+    s = logS.';
+    x0 = [s us ones(length(us),1)]\(us.*s);
+    iter = 0;
+    fcnt = 0;
+    maxiter = 5000;
+
     switch type
         case 1
+            x0 = [s us-x0(1) ones(length(us),1)]\(us.*s);
+            
+            opt = optimoptions(@fsolve, 'Display','off',...
+                'MaxFunctionEvaluations',maxiter, 'MaxIterations',maxiter);
+            [xi,~,exitflag,output] = fsolve(@(x)init_eqs(x,s,us), x0, opt);
+            if exitflag > 0
+                x0 = xi;
+                iter = output.iterations;
+                fcnt = output.funcCount;
+            else
+                bad.init = bad.init + 1;
+                iter = 300;
+                fcnt = 300;
+            end
+            
             loss = @book_loss;
         case 2    % norm(ecdf - cdf) for each `s'.
-            loss = @my_loss;
+            x0(3) = [];
+            n = size(logN, 1);
+            Necdf = ((1:n).'-0.3) ./ (n+0.4);
+
+            loss = @(x)my_loss(x, Necdf);
         case 3    % mle
+            x0(3) = [];
+
             loss = @mle_loss;
+    end
+
+    opt = optimset('MaxFunEvals', maxiter, 'MaxIter', maxiter);
+    [x,~,exitflag,output] = fminsearch(loss, x0, opt);
+
+    if exitflag <= 0
+        bad.solve = bad.solve + 1;
+        error('psn_curve: cannot solve parameters of U.');
+    else
+        output.iterations = output.iterations + iter;
+        output.funcCount = output.funcCount + fcnt;
     end
 end
 
+
 %%
-function loss = my_loss(x)
+
+function y = init_eqs(x,s,us)
+    y = x(1) + x(3)./(s(1:3)-x(2)) - us(1:3);
+end
+
+function loss = my_loss(x, Necdf)
     v = bsxfun(@times, logN-x(1), logS-x(2));
     try
         if strcmpi(dist, 'wbl')

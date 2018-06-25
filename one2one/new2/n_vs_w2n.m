@@ -15,7 +15,7 @@ Nf = 10.^[
     5.7712	5.9253	5.9787	6.2305	6.4996
 ];
 
-dist = {'Normal', 'wbl'};
+dist = {'wbl', 'Normal'};
 for i = 1:length(dist)
     [U,V,paras] = psn_curve(Nf, s, dist{i}, false);
     paras

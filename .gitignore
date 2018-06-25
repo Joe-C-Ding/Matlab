@@ -8,3 +8,4 @@ calibration/**/*.mat
 calibration/rainflow/other/*.xlsx
 calibration/ncode/
 *.eps
+one2one/new2/BadExample/

@@ -54,6 +54,7 @@ dim = [xy-0.001 0.001 0.001];
 h = annotation('textbox',dim,'String',str,'FitBoxToText','on');
 h.HorizontalAlignment = hor;
 h.VerticalAlignment = ver;
+h.Interpreter = 'latex';
 
 end
 

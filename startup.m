@@ -2,7 +2,7 @@ start_tic = tic;
 
 format shortG;
 format compact;
-% parpool local 4;
+% parpool('local', 4);
 
 addpath(genpath([pwd, '\utilities']));
 
