@@ -20,45 +20,35 @@ Nf = [
         0.037        0.201        1.246         6.71          103
 ];
 
-for type = [1 2]
-    [U,V,paras,output] = psn_curve(Nf, s, 'wbl', [1 1], 0, type);
-    loc = paras.pd.loc;
+dist = {'normal'};
+type = 2;
+for i = 1:length(dist)
+    [U,V,paras,output] = psn_curve(Nf, s, dist{i}, [1 1], 0, type);
+    paras
+    paras.pd
+    [output.iterations, output.funcCount]
     
-    v = reshape(V.ns(Nf, s), [], 1)-loc;
+    v = reshape(V.ns(Nf, s), [], 1);
     
     figure;
-    h = wblplot(v(v>0));
-    
-    xlabel('$v$');
-    ylabel('');
-    title('');
-    grid off;
-    
-    h = gca;
-    h.XTickLabel = {};
-    
+    normplot(v);
+
+    figure;
+    ecdf(v);
+    fplot(@(x)U.v(x), [min(v), max(v)]);
+
     figure;
     f = [0.01 0.1 0.5 0.9 0.99];
-    plot(Nf, ones(size(Nf,1),1)*s, 'kx');
+    plot(Nf, ones(size(Nf,1),1)*s, 'x');
     
     n_plot = logspace(log10(min(Nf(:))), log10(max(Nf(:))));
     s_plot = zeros(length(n_plot), length(f));
-    for i = 1:length(f)
-        s_plot(:,i) = U.nf(n_plot, f(i));
+    for j = 1:length(f)
+        s_plot(:,j) = U.nf(n_plot, f(j));
     end
     
-    plot(n_plot, s_plot, 'k');
-    grid off;
-    xlim([0 n_plot(end)]);
-    xlabel('$N$');
-    ylabel('$S$');
-%     ylim([300 550]);
+    plot(n_plot, s_plot);
     set(gca, 'xscale', 'log');
-    h = gca;
-    h.XTick = 10.^[-1 0 1 2 3 4 5];
-    h.YTick = 0.6:0.1:1.1;
-%     h.XTickLabel= strsplit(num2str(s, '%g\n'));
-%     h.XTick = [];
 end
 
 %%
