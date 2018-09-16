@@ -6,12 +6,16 @@ format compact;
 
 addpath(genpath([pwd, '\utilities']));
 
+%% endcoding
+% slCharacterEncoding('UTF-8');
+
 %% graphical default setting
 set(groot, 'DefaultFigureWindowStyle', 'docked');
 set(groot, 'DefaultAxesNextPlot', 'add');   % hold on
 set(groot, 'DefaultAxesXGrid', 'on');       % grid on
 set(groot, 'DefaultAxesYGrid', 'on');
 set(groot, 'DefaultAxesBox', 'on');
+% set(groot, 'DefaultTextFontName','???');
 
 % default size
 set(groot, 'DefaultLineLineWidth', 2);
