@@ -36,44 +36,56 @@ clear x y s Nf
 Ns = @(s) C./s.^m;
 
 %%
-s = 400;
-n = 5e4;
+s = [400 500];
+n = [4e6 1.5e6];
+lt = ["k", "k-."];
 
-Nf = Ns(s);
-mu = log(Nf);
-sgm = gamma * mu;
-N = makedist('lognormal', mu, sgm);
+nn = 0;
+dd = 0;
+for i = [1 2]
+    Nf = Ns(s(i));
+    h = @(n) n/Nf;
+    hinv = @(d) Nf*d;
 
-% C = 1e-12 * pi;
-% h = @(n) exp(C*s^2*n);
-% hinv = @(d) reallog(d)/C/s^2;
-h = @(n) n/Nf;
-hinv = @(d) Nf*d;
+    d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
 
-d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
-n_d0d = @(d0, d) hinv(d) - hinv(d0);
-d0_dn = @(d, n) h(bsxfun(@minus, hinv(d), n));
-
-Fd0 = @(d) 1-N.cdf(n_d0d(d, 1));
-Fd = @(d, n) Fd0(d0_dn(d, n));
-Fn = @(n, d) Fd0(d0_dn(d, n));
-
-d = linspace(-1, 3);
-n = [0 5e5 1e6 2e6];
-ltype = ["k:", "k--", "k-.", "k"];
-for i = 1:length(n)
-    cdf = Fd(d, n(i));
-    pdf = diff(cdf)./diff(d);
-    pdf(pdf < 1e-3) = nan;
-    plot(d(2:end-1), pdf(2:end), ltype(i));
+    nx = linspace(0, n(i));
+    dx = d_d0n(dd, nx);
+    plot(nn+nx, dx, lt(i));
+    
+    dd = dx(end);
+    nn = nn + nx(end);
 end
+h = text(n(1), dx(1), "$(n_1,d_1)$");
+h.HorizontalAlignment = 'left';
+h.VerticalAlignment = 'top';
 
-ylim([0 0.8]);
-xlabel('$D$');
-ylabel('$f_D(d|n)$');
+nn = 0;
+dd = 0;
+for i = [2 1]
+    Nf = Ns(s(i));
+    h = @(n) n/Nf;
+    hinv = @(d) Nf*d;
 
-legend({'$F_{D_0}(d)$', '$n=0.5\times10^6$', ...
-    '$n=\hphantom{0.}1\times10^6$', '$n=\hphantom{0.}2\times10^6$'},...
-    'Location', 'SE');
+    d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
+
+    nx = linspace(0, n(i));
+    dx = d_d0n(dd, nx);
+    plot(nn+nx, dx, lt(i));
+    
+    dd = dx(end);
+    nn = nn + nx(end);
+end
+h = text(n(2), dx(1), "$(n_2,d'_2)$");
+h.HorizontalAlignment = 'left';
+h.VerticalAlignment = 'top';
+
+xlim([0 1.1*nn]);
+xticks([nn]);
+xticklabels(["$n_1+n_2$"]);
+
+ylim([0 1.1*dd]);
+yticks([dd]);
+yticklabels("$d$");
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

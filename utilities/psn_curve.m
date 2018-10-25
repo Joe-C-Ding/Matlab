@@ -8,12 +8,16 @@ function [ U, V, para, output, cnt ] = psn_curve( N, S, dist, is_log, need_plot,
 %   U.ns = @(n, s) -> F
 %   U.sf = @(s, f) -> n
 %   U.nf = @(n, f) -> s
+% 
+%   U.randv = @(size) -> samples of v
+%   U.rands = @(n, size) ..
+%   U.randn = @(v, size) ..
 %
 %   V.ns: @(n, s) -> V statistic
 %   V.sv: @(s, v) -> n
 %	V.nv: @(n, v) -> s
 %
-%   para: B, m, C; l, d, b; s_handle
+%   para: B, C; pd; s_handle, n_handle
 
 narginchk(3, 6);
 
@@ -79,14 +83,14 @@ para.B = x(1); para.C = x(2);
 V = struct;
 V.ns = @(n, s)bsxfun(@times, para.n_handle(n)-para.B, para.s_handle(s)-para.C);
 if is_log(2)
-    V.nv = @(n, v) exp(para.C + v./(para.n_handle(n)-para.B));
+    V.nv = @(n, v) exp(para.C + bsxfun(@rdivide,v,para.n_handle(n)-para.B));
 else
-    V.nv = @(n, v) para.C + v./(para.n_handle(n)-para.B);
+    V.nv = @(n, v) para.C + bsxfun(@rdivide,v,para.n_handle(n)-para.B);
 end
 if is_log(1)
-	V.sv = @(s, v) exp(para.B + v./(para.s_handle(s)-para.C));
+	V.sv = @(s, v) exp(para.B + bsxfun(@rdivide,v,para.s_handle(s)-para.C));
 else
-    V.sv = @(s, v) para.B + v./(para.s_handle(s)-para.C);
+    V.sv = @(s, v) para.B + bsxfun(@rdivide,v,para.s_handle(s)-para.C);
 end
 
 v = bsxfun(@times, logN-x(1), logS-x(2));

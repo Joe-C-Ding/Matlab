@@ -15,16 +15,16 @@ Nf = 10.^[
     5.7712	5.9253	5.9787	6.2305	6.4996
 ];
 
-dist = {'wbl', 'Normal'};
+dist = {'weibull', 'Normal'};
 for i = 1:length(dist)
-    [U,V,paras] = psn_curve(Nf, s, dist{i}, false);
+    [U,V,paras] = psn_curve(Nf, s, dist{i});
     paras
     paras.pd
     v = reshape(V.ns(Nf, s), [], 1);
     
     figure;
     subplot(2,2,1);
-    normplot(v);
+    probplot(dist{i}, v);
 
     subplot(2,2,2);
     ecdf(v);

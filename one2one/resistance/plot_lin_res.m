@@ -1,9 +1,9 @@
 start_tic = tic;
 % close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
+h = groot; h = h.Children;
 if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
+    i = ([h.Number] ~= 1);
+    close(h(i)); h = h(~i);
 end
 clf(h);
 
@@ -37,27 +37,26 @@ Ns = @(s) C./s.^m;
 
 %%
 s = 400;
+d0 = 0;
 n = 5e4;
 
 Nf = Ns(s)
 mu = log(Nf);
 sgm = gamma * mu;
-N = makedist('lognormal', mu, sgm)
+N = makedist('lognormal', mu, sgm);
 
-h = @(n) n/Nf;
-hinv = @(d) d*Nf;
+hp = @(n,p) bsxfun(@rdivide, n, N.icdf(p));
+hpinv = @(d,p) bsxfun(@times, d, N.icdf(p));
 
-d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
-n_d0d = @(d0, d) hinv(d) - hinv(d0);
-d0_dn = @(d, n) h(bsxfun(@minus, hinv(d), n));
+d_n = @(n,p) hp(hpinv(d0,p)+n, p);
+n_d = @(d,p) hpinv(d,p) - hpinv(d0,p);
 
 R = [0.1 0.5 0.9];
-d0 = d0_dn(1, N.icdf(R));
 n = linspace(0, 10*Nf).';
-d = d_d0n(d0, n);
+d = d_n(n, R);
 plot(n, d, 'k');
 
-ylim([0 2]);
+ylim([0 1.5]);
 xticks(Nf * (0:0.5:4));
 xticklabels((0:0.5:4))
 xlabel('$N/N_s$');
@@ -66,29 +65,29 @@ ylabel('$D$');
 %%
 ax = linspace(N.icdf(0.01), N.icdf(0.95));
 ay = N.pdf(ax);
-k = 0.7/max(ay);
+k = 0.4/max(ay);
 ay = k*ay + 1;
 plot(ax, ay, 'k--');
 plot(ax([1 end]), [1 1], 'k:');
 
 %%
-ht = text(1.66*Nf, 1.43, '$N\sim LN(14.2,0.78)$');
+ht = text(1.5*Nf, 1.3, '$N\sim LN(14.2,0.78)$');
 ht.VerticalAlignment = 'middle';
 ht.HorizontalAlignment = 'left';
 ht.BackgroundColor = 'w';
 % ht.FontSize = 12;
 
-ht = text(0.1*Nf, 0.5, '$P=0.1$');
+ht = text(0.3*Nf, 0.4, '$P=0.1$');
 ht.VerticalAlignment = 'middle';
 ht.HorizontalAlignment = 'left';
 ht.BackgroundColor = 'w';
 
-ht = text(0.25*Nf, 0, '$P=0.5$');
-ht.VerticalAlignment = 'bottom';
+ht = text(0.95*Nf, 0.95, '$P=0.5$');
+ht.VerticalAlignment = 'top';
 ht.HorizontalAlignment = 'left';
 
-ht = text(2*Nf, 0, '$P=0.9$');
-ht.VerticalAlignment = 'bottom';
+ht = text(2.6*Nf, 0.95, '$P=0.9$');
+ht.VerticalAlignment = 'top';
 ht.HorizontalAlignment = 'left';
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

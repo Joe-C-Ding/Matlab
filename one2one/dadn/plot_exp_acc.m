@@ -61,7 +61,35 @@ plot(n, d, 'k');
 ylim([0 2]);
 xticks(Nf * (0:0.5:4));
 xticklabels((0:0.5:4))
-xlabel('$N/N_f$');
+xlabel('$N/N_s$');
 ylabel('$D$');
+
+%%
+ax = linspace(N.icdf(0.01), N.icdf(0.95));
+ay = N.pdf(ax);
+k = 0.7/max(ay);
+ay = k*ay + 1;
+plot(ax, ay, 'k--');
+plot(ax([1 end]), [1 1], 'k:');
+
+%%
+ht = text(1.66*Nf, 1.43, '$N\sim LN(14.2,0.78)$');
+ht.VerticalAlignment = 'middle';
+ht.HorizontalAlignment = 'left';
+ht.BackgroundColor = 'w';
+% ht.FontSize = 12;
+
+ht = text(1.15*Nf, 1.95, '$P=0.1$');
+ht.VerticalAlignment = 'top';
+ht.HorizontalAlignment = 'right';
+% ht.BackgroundColor = 'w';
+
+ht = text(1.95*Nf, 1.95, '$P=0.5$');
+ht.VerticalAlignment = 'top';
+ht.HorizontalAlignment = 'left';
+
+ht = text(2*Nf, 0.5, '$P=0.9$');
+ht.VerticalAlignment = 'top';
+ht.HorizontalAlignment = 'left';
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

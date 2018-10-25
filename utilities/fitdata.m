@@ -13,15 +13,15 @@ if isvector(data)
     data = data(:);
 end
 
-if strcmpi(dist, 'logn') || strcmpi(dist, 'Lognormal')
+if strcmpi(dist, 'logn')
     dist = 'Lognormal';
-elseif strcmpi(dist, 'wbl') || strcmpi(dist, 'Weibull')
+elseif strcmpi(dist, 'wbl')
     dist = 'Weibull';
 end
 
-distribution(size(data, 2), 1) = prob.FittableDistribution;
+distribution(size(data, 2), 1) = prob.LognormalDistribution;
 for i = 1:size(data, 2)
-    distribution(i) = fitdist(dist, dist);
+    distribution(i) = fitdist(data(:,i), dist);
 end
 
 if isplot

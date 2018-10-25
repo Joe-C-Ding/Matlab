@@ -50,8 +50,10 @@ xlim([1, 2e6]);
 h = gca;
 h.XTick = [n0];
 h.XTickLabel = {'$n_0$'};
+xlabel('$N$');
 h.YTick = [s0];
 h.YTickLabel = {'$s_0$'};
+ylabel('$S$');
 
 %%
 h = text(n0+0.05e6, s0+1, '$(n_0,s_0)$');

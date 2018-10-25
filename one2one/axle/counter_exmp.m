@@ -7,10 +7,16 @@ if length(h) > 1
 end
 clf(h);
 
-N = 10000;
-x = sum(1./(1:N));
-X = integral(@(x) 1./x, 1, N);
+RV = makedist('Normal', 100, 5);
+F = @RV.cdf;
+f = @RV.pdf;
+Es = RV.mean;
 
-[x, X, x-X]
+N = @(s) 1e7
+./s.^5;
+lhs = integral(@(s) (1-F(s))./N(s), 0, inf);
+rhs = Es * integral(@(s) f(s)./N(s), 0, inf);
+
+[lhs, rhs, lhs-rhs]
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
