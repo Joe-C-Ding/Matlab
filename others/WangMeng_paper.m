@@ -1,8 +1,8 @@
 start_tic = tic;
 close all;
 
-x_str = 'mean(MPa)';
-y_str = 'std.dev.';
+x_str = 'Mean Value (MPa)';
+y_str = 'Standard Deviation';
 font_size = 12;
 
 %%
@@ -13,7 +13,7 @@ f = @(s, m) integral(@(x) x.^k .* normpdf(x, m, s), m-3*s, m+3*s);
 G = arrayfun(f, sigma, mu);
 
 %%
-figure;
+figure; grid on;
 mesh(mu, sigma, G);
 xlim(mu([1 end]));
 ylim(sigma([1 end]));
@@ -25,7 +25,7 @@ zticks(1e6*(0:7));
 
 xlabel(x_str);
 ylabel(y_str);
-zlabel('G');
+zlabel('$G$');
 
 ax = gca;
 ax.XAxis.FontSize = font_size;
@@ -35,7 +35,7 @@ ax.ZAxis.FontSize = font_size;
 view(3);
 
 %%
-figure;
+figure; grid on;
 mesh(mu, sigma, G);
 xlim(mu([1 end]));
 ylim(sigma([1 end]));
@@ -47,7 +47,7 @@ zticks(1e6*(0:7));
 
 xlabel(x_str);
 ylabel(y_str);
-zlabel('G');
+zlabel('$G$');
 
 ax = gca;
 ax.XAxis.FontSize = font_size;

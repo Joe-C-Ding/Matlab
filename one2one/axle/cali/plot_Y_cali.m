@@ -1,5 +1,11 @@
-start_test = tic;
-clf;
+start_tic = tic;
+% close all but one figure, or creat one if none is there.
+h = get(groot, 'Children');
+if length(h) > 1
+    i = ([h.Number] == 1);
+    close(h(~i)); h = h(i);
+end
+clf(h);
 
 i = 17;
 
@@ -58,4 +64,4 @@ ylabel('Error/kN');
 ylim([-4.5 3])
 yticks(-4:1:4);
 
-toc(start_test);
+fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

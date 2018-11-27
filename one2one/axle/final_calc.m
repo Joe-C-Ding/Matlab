@@ -9,11 +9,9 @@ clf(h);
 
 %% prepar data.
 % tested detial: 374km * 8 trip = 2992 km in total.
-if ~exist('numbers', 'var')
-    load spectrum.mat;
-end
+load spectrum.mat;
 s = stress;
-n = numbers(:,4);   % section B
+n = numbers(:,2);   % section B
 plot(s, n);
 
 N = sum(numbers);
@@ -27,57 +25,60 @@ p = n/N/ds;
 % plot(s, p);
 
 ps = @(x) interp1(s, p, x, 'linear', 0);
-fzero(@(x) integral(ps, x, inf) - 5e-6, [30 80])
+% fzero(@(x) integral(ps, x, inf) - 5e-6, [30 80])
 
 %% calc
-% sb = 180;
-% Nb = 1e7;
-% Tg = 1.4;
-% 
-% U = getU(sb, Nb, Tg);
-% loads = ps;
-% 
-% h = @(n, p, s) bsxfun(@rdivide, n, U.sf(s, p));
-% hinv = @(d, p, s) bsxfun(@times, d, U.sf(s, p));
-% eta = @(d, n, p, s) h(hinv(d, p, s) + n, p, s);
-% 
-% s1 = 50;
-% alpha = @(p, s) U.sf(s1, p) ./ U.sf(s, p);
-% coef = @(p) eqcoef(p, alpha, loads);
-% 
-% dc = 1;
-% t = logspace(9, 13);
-% 
-% r = zeros(size(t));
-% for i = 1:length(t)
-%     try
+sb = 144;
+Nb = 1e7;
+Tg = 1.4;
+
+U = getU(sb, Nb, Tg);
+loads = ps;
+
+h = @(n, p, s) bsxfun(@rdivide, n, U.sf(s, p));
+hinv = @(d, p, s) bsxfun(@times, d, U.sf(s, p));
+eta = @(d, n, p, s) h(hinv(d, p, s) + n, p, s);
+
+s1 = 50;
+alpha = @(p, s) U.sf(s1, p) ./ U.sf(s, p);
+coef = @(p) eqcoef(p, alpha, loads);
+
+dc = 1;
+t = logspace(10, 13, 20);
+
+r = zeros(size(t));
+for i = 1:length(t)
+    try
+        [f,fval,exitflag,output]  = fzero(@(p) eta(0, t(i)*coef(p), p, s1)-dc, [eps, 1-eps]);
 %         [f,fval,exitflag,output]  = fzero(@(p) eta(0, t(i)*coef(p), p, s1)-dc, [eps, 1-eps]);
-% %         [f,fval,exitflag,output]  = fzero(@(p) eta(0, t(i)*coef(p), p, s1)-dc, [eps, 1-eps]);
-%         if exitflag > 0
-%             r(i) = 1 - f;
-%             [i t(i) r(i)]
-%         else
-%             [f,fval,exitflag,output]
-%             error('%s: error occurs', mfilename);
-%         end
-%     catch ME
-%         d = eta(0, t(i)*coef([eps, 1-eps]), [eps, 1-eps], s1);
-%         if (dc > nanmax(d))
-%             r(i) = 1;
-%         elseif (dc < nanmin(d))
-%             r(i) = 0;
-%         else
-%             d
-%             error('%s: error occurs', mfilename);
-%         end
-%     end
-% end
-% figure;
-% plot(t, r);
-% 
-% xlabel('$N/{}$blocks');
-% ylabel('$R$');
-% h = gca;
-% h.XScale = 'log';
+        if exitflag > 0
+            r(i) = 1 - f;
+            [i t(i) r(i)]
+        else
+            [f,fval,exitflag,output]
+            error('%s: error occurs', mfilename);
+        end
+    catch ME
+        d = eta(0, t(i)*coef([eps, 1-eps]), [eps, 1-eps], s1);
+        if (dc > nanmax(d))
+            r(i) = 1;
+        elseif (dc < nanmin(d))
+            r(i) = 0;
+        else
+            d
+            error('%s: error occurs', mfilename);
+        end
+    end
+end
+figure;
+plot(t, r);
+
+h = gca;
+h.XScale = 'log';
+xlabel('$N$');
+xticks(10.^[9 10 11 12 13]);
+
+ylabel('$R$');
+
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
