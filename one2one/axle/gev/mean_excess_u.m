@@ -12,6 +12,16 @@ if isa(cdf, 'function_handle')
     Fu = @(u, x) (cdf(x+u)-cdf(u))./(1-cdf(u));
     eu = integral(@(x)1-Fu(u, x), 0, inf, 'arrayvalued', 1);
 
+elseif isvector(cdf)    % x is sample
+    x = cdf(:);
+    if nargin < 2 || isempty(u)
+        u = linspace(min(x), max(x));
+    end
+
+    eu = bsxfun(@minus, x, u);
+    eu(eu<=0) = nan;
+    eu = nanmean(eu);
+
 elseif ismatrix(cdf)    % [x cdf]
     u = cdf(:,1);
     F = cdf(:,2);
@@ -36,15 +46,6 @@ elseif ismatrix(cdf)    % [x cdf]
     s = cumtrapz(cdf(:,1), Fc);
     eu = (s(end)-s+sm) ./ Fc;
     
-elseif isvector(cdf)    % x is sample
-    x = cdf(:);
-    if nargin < 2 || isempty(u)
-        u = linspace(min(x), max(x));
-    end
-
-    eu = bsxfun(@minus, x, u);
-    eu(eu<=0) = nan;
-    eu = nanmean(eu);
 else
     error('mean_excess_u: bad x!')
 end
