@@ -7,9 +7,23 @@ if length(h) > 1
 end
 clf(h);
 
-x = normrnd(100, 1);
+a = 2;
+b = 5;
+x = 10 + wblrnd(a,b, 100, 1);
 
-u = linspace(min(x), max(x));
 
+para = [1, 3]; %[log(35), 1]; %[35, 1];
+cdf = @wblcdf; %@logncdf; %@normcdf;
+pdf = @wblpdf; %@lognpdf; %@normpdf;
+
+cutoff = 10;
+sc = linspace(10, 15);
+fc = wblpdf(sc-cutoff, a,b);
+Fc = wblcdf(sc-cutoff, a,b);
+para = lsqcurvefit(@(para, x) pdf(x, para(1), para(2)), para, sc-10, fc)
+
+plot(sc, fc, 'r', sc, pdf(sc-10, para(1), para(2)));
+figure;
+plot(sc, Fc, 'r', sc, cdf(sc-10, para(1), para(2)));
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
