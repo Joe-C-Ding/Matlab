@@ -11,7 +11,7 @@ rs = linspace(eps, 1, 51);
 R = zeros(1, length(rs));
 
 for i = 1:length(rs)
-    R(i) = fzero(@(r)Lr(r, rs(i))-r, [0+eps, 1-eps]);
+    R(i) = fzero(@(r)Lr(r, rs(i))-r, [0.1, 0.9]);
 end
 plot(rs, R);
 xlabel('$\eta$');

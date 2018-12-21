@@ -1,6 +1,10 @@
 start_tic = tic;
 close all;
 
+% default settings
+set(groot, 'DefaultTextInterpreter', 'latex');
+set(groot, 'DefaultAxesTickLabelInterpreter', 'latex');
+
 x_str = 'Mean Value (MPa)';
 y_str = 'Standard Deviation';
 font_size = 12;

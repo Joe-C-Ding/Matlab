@@ -27,8 +27,16 @@ elseif ismatrix(cdf)    % [x cdf]
     F = cdf(:,2);
 
     used = 10;
-    u0 = u(end-used);
-    F0 = F(end-used);
+    while true
+        u0 = u(end-used);
+        F0 = F(end-used);
+        
+        if (1-F0) > 1e-7
+            break;
+        else
+            used = used + 5;
+        end
+    end
     uu = u(end-used:end);
     Fu = (F(end-used:end)-F0) / (1-F0);
     

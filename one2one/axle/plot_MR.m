@@ -68,8 +68,9 @@ h.YAxis.Exponent = 6;
 yticks(0:10e6:65e6);
 ylim([0 65e6]);
 
+h.XAxis.Exponent = 2;
 xticks(0:200:y(end));
-xtickangle(90);
+% xtickangle(90);
 xlim(y([1 end]));
 
 ylabel('$M_{\rm R}$/N$\cdot$mm');
@@ -90,11 +91,12 @@ Y = D./d;
 A = (4-Y).*(Y-1)./(5*(10*X).^(2.5*X+1.5-0.5*Y));
 k = 1 + A;
 
-stress = 32/pi * k.*mr.*d ./ (d.^4-dp^4);
+stress = 32/pi * k.*mr.*d  ./ (d.^4-dp^4);
+str_in = 32/pi * k.*mr.*dp ./ (d.^4-dp^4);
 s_max = [85 180 180 99 99 180 180 99 99 99 180 180 180].';
 safe = s_max./stress;
 
-[pos mr stress s_max safe]
+[pos mr stress s_max safe str_in 72./str_in]
 
 i = safe < 1.33;
 [pos(i) mr(i) stress(i) s_max(i) safe(i)]

@@ -19,12 +19,16 @@ N = sum(n);
 f = n/N/ds;
 F = cumtrapz(s, f);
 plot(s, f);
-xlim([25 40]);
+xlim([25 50]);
 
-u0 = 45;
+u = [30 37 43 45 49 38 32];
+u0 = u(i);
 ui = find(s>=u0, 1);
-ue = 255;%find(F>=1-1e-6, 1);
-[ui ue]
+ue = find(F>=1-1e-6, 1);
+if isempty(ue)
+    ue = find(s>70, 1);
+end
+% [ui ue]
 F0 = F(ui);
 
 uu = s(ui:ue);
@@ -33,40 +37,24 @@ Fu = (F(ui:ue)-F0) / (1-F0);
 
 figure;
 eu = mean_excess_u([uu Fu]);
-plot(uu, eu);
-xticks(25:2:70);
+plot(uu, eu, 'k');
+xticks(26:2:70);
+xlim([u0 s(ue)]);
 xtickangle(90);
+ylabel('$e(u)/$MPa');
+xlabel('$u/$MPa')
 
 figure;
 pd2 = edfu([uu Fu], u0);
-plot(uu, Fu, 'r', uu, pd2.cdf(uu));
+plot(uu, Fu, 'k', uu, pd2.cdf(uu), 'k-.');
+legend({"$F_u(s)$", "G(s)"}, 'location', 'se');
+xlabel('$s/$MPa');
+% xlim([u0 s(ue)]);
+% ylim([0.9 1])
 
-max(abs(Fu - pd2.cdf(uu)))
+s_max = pd2.icdf(1 - 1e-6/(1-F0));
 
-% legend(name{group{i}});
-% 
-% set(gca, 'XScale', 'log');
-% xlim([10 1e7]);
-% xlabel('cumulative numbers');
-% xticks(10.^(1:7))
-% ylim([10 80]);
-% yticks(20:10:80);
-% ylabel('stress/MPa');
-
-%%
-% pd = prob.NormalDistribution(100, 25);
-% % pd = prob.WeibullDistribution(10, 5);
-% % pd = prob.ExponentialDistribution(5);
-% 
-% u = linspace(pd.icdf(0.3), pd.icdf(0.99)).';
-% 
-% up = 0.5;
-% u0 = pd.icdf(up);
-% 
-% uu = u(u>u0);
-% Fu = (pd.cdf(uu)-up) / (1-up);
-% 
-% pd2 = edfu([uu Fu], u0);
-% plot(uu, Fu, 'r', uu, pd2.cdf(uu));
+[u0, pd2.k, pd2.sigma, norm(Fu-pd2.cdf(uu), inf), s_max]
+% fprintf('s_max = %.3f\tu+s_max = %.3f\n', s_max-u0, s_max);
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
