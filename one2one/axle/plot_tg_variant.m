@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+close all
 
 Tg = [1.2 1.3 1.4];
 lt = ["k:", "k--", "k-."];
@@ -24,7 +18,7 @@ legend({'$T_g=1.2$', '$T_g=1.3$', '$T_g=1.4$'}, 'location', 'NW');
 
 h = gca;
 h.YScale = 'log';
-yt = flip([50 10 1 0.1 1e-3 1e-5 1e-7 1e-10]);
+yt = flip([50 10 1 1e-2 1e-5 1e-7 1e-10]);
 yl = strsplit(num2str(yt, '%1.2g\n'));
 yt = logninv(yt./100, 0, 1);
 yticks(yt);
@@ -46,4 +40,13 @@ h.YMinorGrid = 'off';
 xlabel('stress/MPa')
 ylabel('failure/\%')
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

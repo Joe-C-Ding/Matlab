@@ -10,7 +10,11 @@ addpath(genpath([pwd, '\utilities']));
 % slCharacterEncoding('UTF-8');
 
 %% graphical default setting
-set(groot, 'DefaultFigureWindowStyle', 'docked');
+% set(groot, 'DefaultFigureWindowStyle', 'docked');
+set(groot, 'DefaultFigureUnit', 'centimeter');
+set(groot, 'DefaultFigurePosition', [1 15 8 6]);
+set(groot, 'DefaultFigureColor', 'w');
+
 set(groot, 'DefaultAxesNextPlot', 'add');   % hold on
 set(groot, 'DefaultAxesXGrid', 'on');       % grid on
 set(groot, 'DefaultAxesYGrid', 'on');
@@ -18,11 +22,11 @@ set(groot, 'DefaultAxesBox', 'on');
 % set(groot, 'DefaultTextFontName','???');
 
 % default size
-set(groot, 'DefaultLineLineWidth', 2);
+set(groot, 'DefaultLineLineWidth', 1);
 set(groot, 'DefaultLineMarkerSize', 8);
-set(groot, 'DefaultAxesFontsize', 12);
-set(groot, 'DefaultTextFontsize', 12);
-set(groot, 'DefaultLegendFontsize', 12);
+set(groot, 'DefaultAxesFontsize', 10);
+set(groot, 'DefaultTextFontsize', 10);
+set(groot, 'DefaultLegendFontsize', 10);
 
 % default latex
 set(groot, 'DefaultTextInterpreter', 'latex');
