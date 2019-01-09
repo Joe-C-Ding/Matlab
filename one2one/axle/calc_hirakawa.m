@@ -2,10 +2,21 @@ start_tic = tic;
 close all
 
 %%
-m = 19;
-g = 10;
+load spectra.mat
+i = 2;
 
-l = mod(g.^((1:m)-1), m)
+n = numbers;
+s = stress;
+
+Tg = 1.4;
+p = 0.5; 
+U = getU(240, 1e7, Tg, 5, 5);
+
+D = bsxfun(@rdivide, n, U.sf(s, p));
+D = sum(D);
+N = sum(n(:,1))./D;
+N2 = km2rev(N, true);
+[D' N' N2']
 
 
 %%

@@ -1,9 +1,9 @@
 function [handle] = legendv(vector, format, v_name)
-%LEGENDV legendv(vector, format, v_name)
+%LEGENDV legendv(vector, format, v_name, ...)
 %   format: format string, that is sth like `%.2f'.
 %   v_name: varable's name. say it is 'v', then the legend will be 'v = v1, ...'
 
-narginchk(1, 3)
+narginchk(1, inf)
 if nargin < 3 || isempty(v_name)
     v_name = '';
 end

@@ -49,7 +49,7 @@ pd2 = edfu([uu Fu], u0);
 plot(uu, Fu, 'k', uu, pd2.cdf(uu), 'k-.');
 legend({"$F_u(s)$", "G(s)"}, 'location', 'se');
 xlabel('$s/$MPa');
-% xlim([u0 s(ue)]);
+xlim([u0 s(ue)]);
 % ylim([0.9 1])
 
 s_max = pd2.icdf(1 - 1e-6/(1-F0));

@@ -53,7 +53,7 @@ for i = 1:length(paras)
     sm = icdfs{i}(pcut, para(1), para(2)) + cut;
     res(i, :) = [resnorm, norm(residual, inf), sm];
 
-    if i == 1
+    if i == 3
         plot(s, f, 'k', sc+cut, pdf(sc, para(1), para(2)), 'k-.');
         legend({"$\hat{f}(s)$", "$f(s)$"});
         xlim([30 45]);

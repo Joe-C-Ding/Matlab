@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+close all
 
 data = [180 67; 100 6.66e7; 0 1.33e8];
 
@@ -74,4 +68,13 @@ end
 [D Dt Dh]
 % plot([ds 0], [D Dt], 'x');
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

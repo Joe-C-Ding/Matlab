@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+close all
 
 %% paras
 mt = 17000;
@@ -92,11 +86,15 @@ k = 1 + A;
 
 stress = 32/pi * k.*mr.*d ./ (d.^4-dp^4);
 s_max = [85 180 180 99 99 180 180 99 99 99 180 180 180].';
-safe = s_max./stress;
+safe = ceil(1.33 * s_max)./stress;
 
 [pos mr stress s_max safe]
 
 i = safe < 1.33;
 [pos(i) mr(i) stress(i) s_max(i) safe(i)]
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+print('MR', '-depsc');

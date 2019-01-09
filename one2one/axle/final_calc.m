@@ -28,7 +28,7 @@ ps = @(x) interp1(s, p, x, 'linear', 0);
 % fzero(@(x) integral(ps, x, inf) - 5e-6, [30 80])
 
 %% calc
-sb = 144;
+sb = 180;
 Nb = 1e7;
 Tg = 1.4;
 
