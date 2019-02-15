@@ -88,11 +88,20 @@ Dmc = interp1(f, x, R)
 sum_mu = sum(m);
 sum_sgm = sqrt(sum(v));
 
-plot(x, f, 'r');
-plot(x, normcdf(x, sum_mu, sum_sgm), ':');
+plot(x, f, 'k');
+plot(x, normcdf(x, sum_mu, sum_sgm), 'k:');
 xlim([min(x), 0.4]);
 legend('Monte-Carlo', 'asympt', 'location', 'se')
 xlabel('$D$')
 ylabel('$R$')
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

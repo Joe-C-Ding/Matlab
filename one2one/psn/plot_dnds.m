@@ -16,7 +16,7 @@ if ~exist('U', 'var') || ~isstruct(U)
         5.7712	5.9253	5.9787	6.2305	6.4996
     ];
 
-    [U, V, para] = psn_curve(s, Nf, 0);
+    [U, V, para] = psn_curve(Nf, s, []);
 end
 
 %%
@@ -84,4 +84,13 @@ h = text(np2, sp2, '$P+\Delta P$');
 h.VerticalAlignment = 'bottom';
 h.HorizontalAlignment = 'left';
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

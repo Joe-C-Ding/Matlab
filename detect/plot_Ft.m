@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = groot; h = h.Children;
-if length(h) > 1
-    i = ([h.Number] ~= 1);
-    close(h(i)); h = h(~i);
-end
-clf(h); grid off;
+close all
 
 load Ft_up_lo.mat
 
@@ -19,4 +13,15 @@ h.YScale = 'log';
 h.YLim = [1e-40 1];
 h.YTick = 10.^[-40 -30 -20 -10 0];
 
+grid off
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

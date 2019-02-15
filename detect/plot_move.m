@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = groot; h = h.Children;
-if length(h) > 1
-    i = ([h.Number] ~= 1);
-    close(h(i)); h = h(~i);
-end
-clf(h); grid off;
+close all
 
 C = 1.82e-13;
 m = 2.6465;
@@ -28,11 +22,11 @@ a1 = interp1(N, a, T);
 poda(a1);
 
 N = N - 0.6*(N(end)-3*itvl);
-plot(N, a);
+plot(N, a, 'k');
 plot(N(end), a(end), 'kx')
 
 N2 = N + 0.8*(itvl*4 - N(end));
-plot(N2, a, '--');
+plot(N2, a, 'k--');
 plot(N2(end), a(end), 'kx')
 
 a1 = interp1(N, a, T);
@@ -47,17 +41,32 @@ h.MarkerSize = 6;
 
 ylim([2 36] * mm)
 plotx(T, 'k:')
+ploty(ac, 'k:');
 
 h = gca;
 ylim([2 40] * mm)
 xlim([1 1.1*T(end)]);
 xlabel('$N$');
 ylabel('$a/$mm');
-h.YTick = [2 10 20 30] * mm;
-h.YTickLabel = split(num2str(h.YTick*1000));
+
+h.YTick = [2 10 20 30 36] * mm;
+yt = split(num2str(h.YTick*1000));
+yt{end} = '$a_c$';
+h.YTickLabel = yt;
 
 dblarrow(gca, T([1 2]), [20 20]*mm);
 h = text(mean(T(1:2)), 20*mm, '$T$');
 h.VerticalAlignment = 'bottom';
 
+grid off
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

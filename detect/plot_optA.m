@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = groot; h = h.Children;
-if length(h) > 1
-    i = ([h.Number] ~= 1);
-    close(h(i)); h = h(~i);
-end
-clf(h); grid off;
+close all
 
 C = 1.82e-13;
 m = 2.6465;
@@ -21,7 +15,7 @@ a = (a0^(1-m/2) - C*(m-2)*logspace(0,8)/2).^(2/(2-m));
 a = sort([a linspace(a0, ac, 50)]);
 a(a>ac) = [];
 N = a2N(a);
-plot(N, a);
+plot(N, a, 'k');
 plot(N(end), a(end), 'kx')
 
 h = setlog('xy');
@@ -47,4 +41,15 @@ h.VerticalAlignment = 'top';
 h.BackgroundColor = 'w';
 h.FontSize = 9;
 
+grid off
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

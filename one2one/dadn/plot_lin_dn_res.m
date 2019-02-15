@@ -1,9 +1,9 @@
 start_tic = tic;
 % close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
+h = groot; h = h.Children;
 if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
+    i = ([h.Number] ~= 1);
+    close(h(i)); h = h(~i);
 end
 clf(h);
 
@@ -36,57 +36,41 @@ clear x y s Nf
 Ns = @(s) C./s.^m;
 
 %%
-s = [400 500];
-n = [4e6 1.5e6];
-lt = ["k", "k-."];
+s = 400;
+d0 = 0;
+n = 5e4;
 
-nn = 0;
-dd = 0;
-for i = [1 2]
-    Nf = Ns(s(i));
-    h = @(n) n/Nf;
-    hinv = @(d) Nf*d;
+Nf = Ns(s)
+mu = log(Nf);
+sgm = gamma * mu;
+N = makedist('lognormal', mu, sgm);
 
-    d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
+hp = @(n,p) bsxfun(@rdivide, n, N.icdf(p));
+hpinv = @(d,p) bsxfun(@times, d, N.icdf(p));
 
-    nx = linspace(0, n(i));
-    dx = d_d0n(dd, nx);
-    plot(nn+nx, dx, lt(i));
-    
-    dd = dx(end);
-    nn = nn + nx(end);
+d_n = @(n,p) hp(hpinv(d0,p)+n, p);
+n_d = @(d,p) hpinv(d,p) - hpinv(d0,p);
+
+Fd = @(d, n) 1-N.cdf(bsxfun(@rdivide, n, d));
+Fn = @(n, d) N.cdf(bsxfun(@rdivide, n, d));
+
+d = linspace(-1, 3);
+n = [5e5 1e6 2e6];
+ltype = ["k--", "k-.", "k"];
+for i = 1:length(n)
+    cdf = Fd(d, n(i));
+    pdf = diff(cdf)./diff(d);
+    pdf(pdf < 1e-3) = nan;
+    plot(d(2:end-1), pdf(2:end), ltype(i));
 end
-h = text(n(1), dx(1), "$(n_1,d_1)$");
-h.HorizontalAlignment = 'left';
-h.VerticalAlignment = 'top';
 
-nn = 0;
-dd = 0;
-for i = [2 1]
-    Nf = Ns(s(i));
-    h = @(n) n/Nf;
-    hinv = @(d) Nf*d;
+% ylim([0 0.8]);
+xlabel('$D$');
+ylabel('$f_D(d|n)$');
 
-    d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
-
-    nx = linspace(0, n(i));
-    dx = d_d0n(dd, nx);
-    plot(nn+nx, dx, lt(i));
-    
-    dd = dx(end);
-    nn = nn + nx(end);
-end
-h = text(n(2), dx(1), "$(n_2,d'_2)$");
-h.HorizontalAlignment = 'left';
-h.VerticalAlignment = 'top';
-
-xlim([0 1.1*nn]);
-xticks([nn]);
-xticklabels(["$n_1+n_2$"]);
-
-ylim([0 1.1*dd]);
-yticks([dd]);
-yticklabels("$d$");
+legend({'$n=0.5\times10^6$', ...
+    '$n=\hphantom{0.}1\times10^6$', '$n=\hphantom{0.}2\times10^6$'},...
+    'Location', 'NE');
 
 %%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

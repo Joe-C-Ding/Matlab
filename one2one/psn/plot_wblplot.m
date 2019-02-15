@@ -29,6 +29,7 @@ for type = [1 2]
     
     figure;
     h = wblplot(v(v>0));
+    set(h, 'color', [0 0 0], 'MarkerEdgeColor',[0 0 0]);
     
     xlabel('$v$');
     ylabel('');
@@ -37,6 +38,10 @@ for type = [1 2]
     
     h = gca;
     h.XTickLabel = {};
+    
+    if type == 1
+        print('ca_wblplot', '-depsc');
+    end
     
     figure;
     f = [0.01 0.1 0.5 0.9 0.99];
@@ -60,6 +65,11 @@ for type = [1 2]
     h.YTick = 0.6:0.1:1.1;
 %     h.XTickLabel= strsplit(num2str(s, '%g\n'));
 %     h.XTick = [];
+
+    if type == 2
+        print('my_wblplot', '-depsc');
+        print('my_psn', '-depsc');
+    end
 end
 
 %%

@@ -60,6 +60,6 @@ h.YTick = 0.6:0.1:1.1;
 %     h.XTickLabel= strsplit(num2str(s, '%g\n'));
 %     h.XTick = [];
 
-
+print('nm_psn', '-depsc');
 %%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

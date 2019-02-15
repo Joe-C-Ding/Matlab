@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = groot; h = h.Children;
-if length(h) > 1
-    i = ([h.Number] ~= 1);
-    close(h(i)); h = h(~i);
-end
-clf(h); grid off;
+close all
 
 C = 1.82e-13;
 m = 2.6465;
@@ -32,7 +26,7 @@ end
 itvl = N{2}(end)/4;
 T = itvl*[1 2 3 4 5];
 
-line = ["k--", "k", "k--"];
+line = ["k--", "k", "k-."];
 for i = 1:length(s)
     plot(N{i}, a{i}, line(i));
     plot(N{i}(end), a{i}(end), 'kx')
@@ -46,17 +40,32 @@ end
 
 ylim([2 36] * mm)
 plotx(T, 'k:')
+ploty(ac, 'k:');
 
 h = gca;
 ylim([2 40] * mm)
 xlim([1 1.1*N{3}(end)]);
 xlabel('$N$');
 ylabel('$a/$mm');
-h.YTick = [2 10 20 30] * mm;
-h.YTickLabel = split(num2str(h.YTick*1000));
+
+h.YTick = [2 10 20 30 36] * mm;
+yt = split(num2str(h.YTick*1000));
+yt{end} = '$a_c$';
+h.YTickLabel = yt;
 
 dblarrow(gca, T([1 2]), [20 20]*mm);
 h = text(mean(T(1:2)), 20*mm, '$T$');
 h.VerticalAlignment = 'bottom';
 
+grid off
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

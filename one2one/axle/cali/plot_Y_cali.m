@@ -47,6 +47,7 @@ h = legend({"$Y_{\rm ref}$", "$Y_{\rm calc}$"});
 h.FontSize = 12;
 
 xlim(Time([1 end]));
+xticklabels([]);
 
 ylabel('Load/kN');
 ylim([-25 25]);
@@ -64,4 +65,13 @@ ylabel('Error/kN');
 ylim([-4.5 3])
 yticks(-4:1:4);
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

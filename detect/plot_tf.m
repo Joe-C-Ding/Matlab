@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = groot; h = h.Children;
-if length(h) > 1
-    i = ([h.Number] ~= 1);
-    close(h(i)); h = h(~i);
-end
-clf(h); grid off;
+close all
 
 C = 1.82e-13;
 m = 2.6465;
@@ -47,7 +41,7 @@ for i = 1:ns
     h = plot(T, a1, 'ko');
     h.MarkerSize = 6;
     
-    h = text(T(3)+3e6, a1(3)+0.5*mm, '$a_3$');
+    h = text(T(3)+3e6, a1(3)+0.1*mm, '$a_3$');
     h.VerticalAlignment = 'top';
     h.HorizontalAlignment = 'left';
 end
@@ -56,7 +50,7 @@ h = text(T(1)+4e6, a1(1)+1*mm, '$a_1$');
 h.VerticalAlignment = 'bottom';
 h.HorizontalAlignment = 'left';
 
-h = text(T(2)+7e6, a1(2)+1.5*mm, '$a_2$');
+h = text(T(2)+7e6, a1(2)+1.2*mm, '$a_2$');
 h.VerticalAlignment = 'top';
 h.HorizontalAlignment = 'left';
 
@@ -68,12 +62,12 @@ ylim([2 36] * mm)
 plotx(T, 'k:')
 
 h = gca;
-ylim([2 45] * mm)
+ylim([2 42] * mm)
 xlim([1 1.1*T(end)]);
 ploty(ac, 'k:');
 
 h.YTick = [2*mm ac];
-h.YTickLabel = {"$a_0$", "$a_u$"};
+h.YTickLabel = {"$a_0$", "$a_c$"};
 h.XTick = T;
 h.XTickLabel = {"$t_1$", "$t_2$", "$t_3$", "$t_4$", "$t$"};
 
@@ -83,4 +77,15 @@ h.VerticalAlignment = 'bottom';
 
 legend(hl, {'$t_f\in(t_3,t_4]$', '$t_f\in(t_4,t]$'}, 'Location','NW');
 
+grid off
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

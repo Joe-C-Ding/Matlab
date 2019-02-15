@@ -1,5 +1,5 @@
 start_tic = tic;
-clf;
+close all;
 
 if ~exist('U', 'var') || ~isstruct(U)
     s = [525 500 475 450 400];
@@ -16,7 +16,7 @@ if ~exist('U', 'var') || ~isstruct(U)
         5.7712	5.9253	5.9787	6.2305	6.4996
     ];
 
-    [U, V, para] = psn_curve(s, Nf, 0);
+    [U, V, para] = psn_curve(Nf, s);
 end
 
 %%
@@ -28,14 +28,14 @@ n = U.sf(s, f);
 xs = s*ones(sample, 1);
 N = U.randn(s, 10);
 % [xs N]
-plot(N, xs, 'x');
+plot(N, xs, 'kx', 'linewidth', 2);
 h = text(sqrt(n*1e5), 500-10, '$\Pr(N|s_0)=0.8$');
 h.VerticalAlignment = 'Top';
 
 xn = n*ones(sample, 1);
 S = U.rands(n, 10) + 30;
 % [xn S]
-plot(xn, S, 'x');
+plot(xn, S, 'kx', 'linewidth', 2);
 h = text(n, max(S)+10, '$\Pr(S|n_0)=0.8$?');
 h.VerticalAlignment = 'bottom';
 h.HorizontalAlignment = 'left';
@@ -43,7 +43,7 @@ h.HorizontalAlignment = 'left';
 xn = logspace(log10(1e5), log10(2e6));
 xs = U.nf(xn, f);
 h = plot(xn, xs, 'k');
-legend(h, sprintf('P-S-N curve ($P=%.1f$)', f));
+legend(h, sprintf('P--S--N curve ($P=%.1f$)', f));
 
 h = gca;
 xlim([1e5, 2e6]);
@@ -59,4 +59,13 @@ ylabel('S');
 h = textarrow(gca, [n+3e5 n], [s+15, s], '$(n_0,s_0)$');
 h.LineWidth = 1;
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

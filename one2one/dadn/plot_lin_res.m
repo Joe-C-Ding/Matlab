@@ -1,9 +1,9 @@
 start_tic = tic;
 % close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
+h = groot; h = h.Children;
 if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
+    i = ([h.Number] ~= 1);
+    close(h(i)); h = h(~i);
 end
 clf(h);
 
@@ -37,44 +37,58 @@ Ns = @(s) C./s.^m;
 
 %%
 s = 400;
+d0 = 0;
 n = 5e4;
 
-Nf = Ns(s);
+Nf = Ns(s)
 mu = log(Nf);
 sgm = gamma * mu;
 N = makedist('lognormal', mu, sgm);
 
-% C = 1e-12 * pi;
-% h = @(n) exp(C*s^2*n);
-% hinv = @(d) reallog(d)/C/s^2;
-h = @(n) n/Nf;
-hinv = @(d) Nf*d;
+hp = @(n,p) bsxfun(@rdivide, n, N.icdf(p));
+hpinv = @(d,p) bsxfun(@times, d, N.icdf(p));
 
-d_d0n = @(d0, n) h(bsxfun(@plus, hinv(d0), n));
-n_d0d = @(d0, d) hinv(d) - hinv(d0);
-d0_dn = @(d, n) h(bsxfun(@minus, hinv(d), n));
+d_n = @(n,p) hp(hpinv(d0,p)+n, p);
+n_d = @(d,p) hpinv(d,p) - hpinv(d0,p);
 
-Fd0 = @(d) 1-N.cdf(n_d0d(d, 1));
-Fd = @(d, n) Fd0(d0_dn(d, n));
-Fn = @(n, d) Fd0(d0_dn(d, n));
+R = [0.1 0.5 0.9];
+n = linspace(0, 10*Nf).';
+d = d_n(n, R);
+plot(n, d, 'k');
 
-d = linspace(-1, 3);
-n = [0 5e5 1e6 2e6];
-ltype = ["k:", "k--", "k-.", "k"];
-for i = 1:length(n)
-    cdf = Fd(d, n(i));
-    pdf = diff(cdf)./diff(d);
-    pdf(pdf < 1e-3) = nan;
-    plot(d(2:end-1), pdf(2:end), ltype(i));
-end
+ylim([0 1.5]);
+xticks(Nf * (0:0.5:4));
+xticklabels((0:0.5:4))
+xlabel('$N/N_s$');
+ylabel('$D$');
 
-ylim([0 0.8]);
-xlabel('$D$');
-ylabel('$f_D(d|n)$');
+%%
+ax = linspace(N.icdf(0.01), N.icdf(0.95));
+ay = N.pdf(ax);
+k = 0.4/max(ay);
+ay = k*ay + 1;
+plot(ax, ay, 'k--');
+plot(ax([1 end]), [1 1], 'k:');
 
-legend({'$F_{D_0}(d)$', '$n=0.5\times10^6$', ...
-    '$n=\hphantom{0.}1\times10^6$', '$n=\hphantom{0.}2\times10^6$'},...
-    'Location', 'SE');
+%%
+ht = text(1.5*Nf, 1.3, '$N\sim LN(14.2,0.78)$');
+ht.VerticalAlignment = 'middle';
+ht.HorizontalAlignment = 'left';
+ht.BackgroundColor = 'w';
+% ht.FontSize = 12;
+
+ht = text(0.3*Nf, 0.4, '$P=0.1$');
+ht.VerticalAlignment = 'middle';
+ht.HorizontalAlignment = 'left';
+ht.BackgroundColor = 'w';
+
+ht = text(0.95*Nf, 0.95, '$P=0.5$');
+ht.VerticalAlignment = 'top';
+ht.HorizontalAlignment = 'left';
+
+ht = text(2.6*Nf, 0.95, '$P=0.9$');
+ht.VerticalAlignment = 'top';
+ht.HorizontalAlignment = 'left';
 
 %%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

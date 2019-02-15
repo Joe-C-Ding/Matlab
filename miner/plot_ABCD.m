@@ -1,5 +1,6 @@
 start_tic = tic;
-clf;
+close all
+
 h = gca;
 xlim([0 1]); h.XTick = 0:0.2:1;
 ylim([0 1]); h.YTick = 0:0.2:1;
@@ -27,14 +28,14 @@ y(end) = 0;
 %     207/256 * [1 1 1], 'LineStyle', 'none' ...
 % );
 
-plot([conf conf], [0 1], 'r--');
-hr = plot([0 1], [conf conf], 'r--');
-hxy = plot(x, y);
+plot([conf conf], [0 1], 'k--');
+hr = plot([0 1], [conf conf], 'k--');
+hxy = plot(x, y, 'k');
 
 grid off;
 h = legend([hxy, hr], '$D_1+D_2=d_1+d_2$', '$R=0.8$');
 h.Location = 'southwest';
-h.FontSize = 12;
+% h.FontSize = 12;
 xlabel('$D_1 / u$'); ylabel('$D_2 / v$');
 daspect([1 1 1]);
 
@@ -46,4 +47,13 @@ text(0.7, 0.93, '$D$');
 text(0.88, 0.58, '$C''$');
 text(0.93, 0.7, '$D''$');
 
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

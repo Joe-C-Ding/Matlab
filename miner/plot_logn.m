@@ -32,7 +32,7 @@ if is_plot(1)
     end
     
     R = R.';
-    plot(rs, R);
+    plot(rs, R, 'k');
     xlabel('$\eta$');
     ylabel('$R_p$');
     
@@ -49,6 +49,8 @@ if is_plot(1)
     ht.Interpreter = 'latex';
     ht.HorizontalAlignment = 'center';
     ht.VerticalAlignment = 'bottom';
+    
+    print('logn_Rp_h', '-depsc');
 end
 
 %%
@@ -63,12 +65,14 @@ if is_plot(2)
         R(i) = fzero(@(r)Sxy(r, rs, X, Y)-r, [eps, 1-eps]);
     end
     
-    plot(s1, R);
+    plot(s1, R, 'k');
     xlabel('$\sigma$');
     ylabel('$R_p$');
     
     hl = legend('$R_p(\sigma)\bigm|{}_{\eta=1}$');
     hl.Location = 'northwest';
+    
+     print('logn_Rp_s', '-depsc');
 end
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

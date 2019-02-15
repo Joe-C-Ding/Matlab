@@ -19,7 +19,7 @@ function [ U, V, para, output, cnt ] = psn_curve( N, S, dist, is_log, need_plot,
 %
 %   para: B, C; pd; s_handle, n_handle
 
-narginchk(3, 6);
+narginchk(2, 6);
 
 if ~isvector(S) || size(N, 2) ~= length(S)
     if ~strcmp(dist, 'get_stat')
@@ -112,7 +112,7 @@ try
         pd.pdf = @(v) pdw.pdf(v-loc);
         pd.icdf = @(v) pdw.icdf(v) + loc;
 
-        pd.random = @(varargin) pdw.random(varargin) + loc;
+        pd.random = @(n, m) pdw.random(n, m) + loc;
     else
         pd = fitdist(v, dist);
     end
