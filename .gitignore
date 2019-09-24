@@ -10,3 +10,4 @@ calibration/ncode/
 one2one/new2/BadExample/
 one2one/axle/cali/*.mat
 one2one/axle/tests/testdata.mat
+*.fig
