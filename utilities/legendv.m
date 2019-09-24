@@ -1,4 +1,4 @@
-function [handle] = legendv(vector, format, v_name)
+function [handle] = legendv(vector, format, v_name, varargin)
 %LEGENDV legendv(vector, format, v_name, ...)
 %   format: format string, that is sth like `%.2f'.
 %   v_name: varable's name. say it is 'v', then the legend will be 'v = v1, ...'
@@ -18,7 +18,7 @@ else
 end
 
 target = strsplit(num2str(vector, format));
-handle = legend(target);
+handle = legend(target, varargin{:});
 
 end
 

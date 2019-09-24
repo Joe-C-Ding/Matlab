@@ -144,10 +144,10 @@ if need_plot
     
     figure;
     s = ones(size(N,1), 1) * S;
-    plot(N, s, 'x');
+    plot(N, s, 'kx');
     
     F = [0.01 0.1 0.5 0.9 0.99];
-    n_plot = [0.9 * min(N(:)), 1.1 * max(N(:))];
+    n_plot = [1e4 1e8]; %[0.9 * min(N(:)), 1.1 * max(N(:))];
     if is_log(1)
         n_plot = log10(n_plot);
         N = logspace(n_plot(1), n_plot(2)).';
@@ -158,7 +158,7 @@ if need_plot
     for i = 1:length(F)
         s(:,i) = U.nf(N, F(i));
     end
-    plot(N, s);
+    plot(N, s, 'k');
     xlim(N([1 end]));
     ylim([0.9*min(S(:)) 1.1*max(S(:))]);
 
