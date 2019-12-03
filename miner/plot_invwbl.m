@@ -47,10 +47,10 @@ print('invwbl_Rb', '-depsc');
 
 %%
 figure;
-b = linspace(3.5, 30, 31);
+b = linspace(3.252, 30, 31);
 R = zeros(size(b));
 
-for i = 1:length(b);
+for i = 1:length(b)
     X.B = b(i);
     R(i) = fzero(@(r)Lr(r, 1, X)-r, [eps, 1-eps]);
 end

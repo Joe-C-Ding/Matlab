@@ -12,7 +12,7 @@ function end_up(script_name, fig_names, paper_oriented)
 %       -> cell array, in this case its lenght mush no less than figs
 %          count. And figure(1) will be save as fig_name{1}, and so on.
 %   paper_oriented: bool, true to save `.eps` in `./pic'; `.png` and `.fig`
-%       -> in `.\word\fig'. false to save them all in `.\script'.
+%       -> in `./word/fig'. false to save them all in `./script'.
 if nargin < 1
     script_name = 'script';
 end

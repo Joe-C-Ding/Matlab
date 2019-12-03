@@ -91,9 +91,9 @@ sum_sgm = sqrt(sum(v));
 plot(x, f, 'k');
 plot(x, normcdf(x, sum_mu, sum_sgm), 'k:');
 xlim([min(x), 0.4]);
-legend('Monte-Carlo', 'asympt', 'location', 'se')
-xlabel('$D$')
-ylabel('$R$')
+legend('Monte-Carlo', 'approximation', 'location', 'se')
+xlabel('total damage, $D$')
+ylabel('Reliability, $R$')
 
 %%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

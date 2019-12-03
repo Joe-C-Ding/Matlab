@@ -30,13 +30,17 @@ h.YTickLabel = split(num2str(h.YTick*1000));
 at = 5*mm;
 Na = interp1(a, N, at);
 plot(Na, at, 'ko');
+h = text(1.1*Na, at, '$a_d$');
+h.VerticalAlignment = 'top';
+h.HorizontalAlignment = 'left';
+% h.BackgroundColor = 'w';
+h.FontSize = 9;
+
 plot([Na Na], [at, 23*mm], 'k:');
 plot(N([end end]), [17*mm ac], 'k:');
 dblarrow(gca, [Na N(end)], [20 20]*mm);
 
-itvl = N(end)-Na;
-itvl = km2rev(itvl, 1);
-h = text(sqrt(Na*N(end)), 17*mm, sprintf('$%d\\times10^4 \\hbox{ km}$', floor(itvl)));
+h = text(sqrt(Na*N(end)), 17*mm, '$T$');
 h.VerticalAlignment = 'top';
 h.BackgroundColor = 'w';
 h.FontSize = 9;

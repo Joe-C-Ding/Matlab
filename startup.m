@@ -21,6 +21,11 @@ set(groot, 'DefaultAxesYGrid', 'on');
 set(groot, 'DefaultAxesBox', 'on');
 % set(groot, 'DefaultTextFontName','???');
 
+%default background color
+set(groot, 'DefaultAxesColor', 'none');
+set(groot, 'DefaultLegendColor', 'none');
+set(groot, 'DefaultLegendBox', 'off');
+
 % default size
 set(groot, 'DefaultLineLineWidth', 1);
 set(groot, 'DefaultLineMarkerSize', 8);

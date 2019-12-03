@@ -32,20 +32,27 @@ plot([conf conf], [0 1], 'k--');
 hr = plot([0 1], [conf conf], 'k--');
 hxy = plot(x, y, 'k');
 
+hf = fill([0, x], [0, y], 0.3*[1,1,1]);
+hf.LineStyle = 'none';
+hf.FaceAlpha = 0.5;
+
 grid off;
-h = legend([hxy, hr], '$D_1+D_2=d_1+d_2$', '$R=0.8$');
+h = legend([hxy, hr], '$D=d_1+d_2$', '$R=0.8$');
 h.Location = 'southwest';
+h.EdgeColor = 'none';
+h.Color = 'none';
+
 % h.FontSize = 12;
-xlabel('$D_1 / u$'); ylabel('$D_2 / v$');
+xlabel('$u$'); ylabel('$v$');
 daspect([1 1 1]);
 
 text(0.4, 0.4, '$A$');
 text(0.9, 0.9, '$B$');
 
-text(0.6, 0.85, '$C$');
-text(0.7, 0.93, '$D$');
-text(0.88, 0.58, '$C''$');
-text(0.93, 0.7, '$D''$');
+% text(0.6, 0.85, '$C$');
+% text(0.7, 0.93, '$D$');
+% text(0.88, 0.58, '$C''$');
+% text(0.93, 0.7, '$D''$');
 
 %%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
@@ -54,6 +61,8 @@ figure(1);
 if strncmpi(mfilename, 'plot_', 5)
     pname = mfilename;  % mfilename(6:end) wont work.
     print(pname(6:end), '-depsc');
+    
+    savefig(pname(6:end))
 else
     set(1, 'windowstyle', 'docked')
 end

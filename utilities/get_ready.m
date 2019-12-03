@@ -1,6 +1,6 @@
 function get_ready(keep)
-%GET_READY start a tic, and close all figures but figure 1.
-%   Detailed explanation goes here
+% get_ready(keep = true) start a tic, and close all figures.
+%   keep: if true, figure 1 will be kept from deleting.
 if nargin < 1
     keep = true;
 end
