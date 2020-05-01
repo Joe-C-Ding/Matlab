@@ -1,3 +1,5 @@
+% calc 1M places of pi, using vpa()
+% finding some intersting numbers in it, or stat 0-9's cumulative mass.
 start_tic = tic;
 clf;
 

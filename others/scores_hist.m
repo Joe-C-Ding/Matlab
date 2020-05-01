@@ -1,8 +1,4 @@
-start_tic = tic;
-figure(1);
-clf; ax = gca;
-
-hold(ax, 'on');
+get_ready()
 
 scores = cell(1,3);
 scores{1} = [
@@ -294,4 +290,4 @@ end
 % Y = discretize(0.3*scores{k}, st, st(2:end));
 % [scores{k}' Y']
 
-fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+end_up(mfilename);
