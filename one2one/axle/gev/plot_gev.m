@@ -1,15 +1,8 @@
-start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+get_ready();
 
 load ../spectrum.mat
 
-i = 4;
+i = 2;
 
 s = stress;
 ds = s(2) - s(1);
@@ -21,7 +14,7 @@ F = cumtrapz(s, f);
 plot(s, f);
 xlim([25 50]);
 
-u = [30 37 43 45 49 38 32];
+u = [30 38 43 45 49 38 32];
 u0 = u(i);
 ui = find(s>=u0, 1);
 ue = find(F>=1-1e-6, 1);
@@ -57,4 +50,4 @@ s_max = pd2.icdf(1 - 1e-6/(1-F0));
 [u0, pd2.k, pd2.sigma, norm(Fu-pd2.cdf(uu), inf), s_max]
 % fprintf('s_max = %.3f\tu+s_max = %.3f\n', s_max-u0, s_max);
 
-fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+end_up(mfilename, {});

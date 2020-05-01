@@ -50,13 +50,16 @@ if is_plot(1)
     ht.HorizontalAlignment = 'center';
     ht.VerticalAlignment = 'bottom';
     
+    grid off;
+    box off;
+    
     print('logn_Rp_h', '-depsc');
 end
 
 %%
 if is_plot(2)
     rs = 1;
-    s1 = [linspace(0.01, 1, 31) 0.74];
+    s1 = [linspace(0.01, 2, 31)];
     
     R = zeros(length(s1), 1);
     for i = 1:length(s1)
@@ -71,8 +74,12 @@ if is_plot(2)
     
     hl = legend('$R_p(\sigma)\bigm|{}_{\eta=1}$');
     hl.Location = 'northwest';
+    hl.EdgeColor = 'none';
+        
+    grid off;
+    box off;
     
-     print('logn_Rp_s', '-depsc');
+    print('logn_Rp_s', '-depsc');
 end
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));

@@ -1,20 +1,15 @@
-start_tic = tic;
-close all
+get_ready();
 
 %%
-m = 19;
-g = 10;
+k = 0.1;
+N = 100;
 
-l = mod(g.^((1:m)-1), m)
+x = exprnd(20, N, 1);
+e = normrnd(0, 1, N, 1);
+y = k * x + 1000 + e;
 
+scatter(x, y);
+r = corr(x, y)
 
 %%
-fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
-
-figure(1);
-if strncmpi(mfilename, 'plot_', 5)
-    pname = mfilename;  % mfilename(6:end) wont work.
-    print(pname(6:end), '-depsc');
-else
-    set(1, 'windowstyle', 'docked')
-end
+end_up(mfilename)

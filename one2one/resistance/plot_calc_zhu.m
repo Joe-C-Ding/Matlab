@@ -1,11 +1,5 @@
 start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+close all
 
 %% prepare data
 s = [525 500 475 450 400];
@@ -25,7 +19,7 @@ Nf = 10.^([
 
 % test result
 Nr = 10.^[0.63, 0.77, 0.84, 0.90, 1.09, 1.12, 1.16, 1.20, 1.45];
-R = 1 - (0.1:0.1:0.9);
+R = 1 - (0.1:0.1:0.9) - 0.04;
 % R = 1 - normcdf([-1.28, -0.84, -0.52, -0.25, 0.00, 0.25, ...
 %                 0.52, 0.84, 1.28], 0, 1);
 
@@ -51,7 +45,7 @@ alpha = @(p, s) U.sf(s1, p) ./ U.sf(s, p);
 coef = @(p) eqcoef(p, alpha, loads);
 
 dc = 1;
-t = linspace(0, 30);
+t = linspace(0, 200, 500);
 
 r = zeros(size(t));
 for i = 1:length(t)
@@ -76,11 +70,29 @@ for i = 1:length(t)
         end
     end
 end
-plot(t,r);
+plot(t,r, 'k');
 
-h = plot(Nr, R, 'x');
+h = plot(Nr, R, 'kx');
 legend(h, 'test result');
-xlabel('$N/{}$blocks');
+xlabel('$N$');
 ylabel('$R$');
 
+h = gca;
+h.XScale = 'log';
+grid off;
+
+xt = 10.^(5:8);
+xticks(xt / n_tot);
+xlim([5e5 5e7] / n_tot);
+xticklabels(strsplit(num2str(log10(xt), '$10^{%d}$\n')))
+
+%%
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+
+figure(1);
+if strncmpi(mfilename, 'plot_', 5)
+    pname = mfilename;  % mfilename(6:end) wont work.
+    print(pname(6:end), '-depsc');
+else
+    set(1, 'windowstyle', 'docked')
+end

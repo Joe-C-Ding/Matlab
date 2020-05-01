@@ -17,6 +17,9 @@ plot(rs(2:end), R(2:end), 'k');
 xlabel('$\eta$');
 ylabel('$R_p$');
 
+grid off;
+box off;
+
 p = ismembertol(rs, 0.1:0.1:1, 1e-8);
 [rs(p)', R(p)']
 max(R)
@@ -31,12 +34,16 @@ plot([0 1], [0 1], 'k--');
 hp = plot(R(end), R(end), 'kx');
 xlabel('$R$');
 xticks(0:0.2:1)
-ylabel('$S$');
+ylabel('$\mathit{\Pi}$');
 ylim([0 1]);
 daspect([1 1 1]);
 
-hl = legend([hs, hp], {'$S(R)\bigm|{}_{\eta=1}$', '$S(R_p)=R_p$'});
+grid off;
+box off;
+
+hl = legend(hs, {'$\mathit{\Pi}(R)\bigm|{}_{\eta=1}$'});
 hl.Location = 'southeast';
+hl.EdgeColor = 'none';
 
 ht = text(R(end)-.03, R(end), sprintf('$R_p=%.4f$', R(end)));
 ht.HorizontalAlignment = 'right';

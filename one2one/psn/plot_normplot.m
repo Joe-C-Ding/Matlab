@@ -38,7 +38,8 @@ h.XTickLabel = {};
 
 figure;
 f = [0.01 0.1 0.5 0.9 0.99];
-plot(Nf, ones(size(Nf,1),1)*s, 'kx');
+data = plot(Nf, ones(size(Nf,1),1)*s, 'kx');
+data = data(1);
 
 n_plot = logspace(log10(min(Nf(:))), log10(max(Nf(:))));
 s_plot = zeros(length(n_plot), length(f));
@@ -46,7 +47,13 @@ for i = 1:length(f)
     s_plot(:,i) = U.nf(n_plot, f(i));
 end
 
-plot(n_plot, s_plot, 'k');
+    
+h = plot(n_plot, s_plot, 'k');
+set(h([1 5]), 'LineStyle', ':');
+set(h([2 4]), 'LineStyle', '-.');
+set(h(3), 'LineStyle', '-');
+legend([h(1:3); data], {"$P=0.01/0.99$","$P=0.1/0.9$","$P=0.5$","failure data"});
+    
 grid off;
 xlim([0 n_plot(end)]);
 ylim([0.6 1.2])
@@ -59,6 +66,10 @@ h.XTick = 10.^[-1 0 1 2 3 4 5];
 h.YTick = 0.6:0.1:1.1;
 %     h.XTickLabel= strsplit(num2str(s, '%g\n'));
 %     h.XTick = [];
+
+xt = xticks;
+xt = strsplit(num2str(log10(xt * 1e3), '$10^{%d}$\n'));
+xticklabels(xt);
 
 print('nm_psn', '-depsc');
 %%

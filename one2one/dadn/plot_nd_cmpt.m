@@ -51,7 +51,8 @@ h.YTickLabel = {'$d$'};
 pda = U.pda(nr);
 pdn = U.pdn(ar);
 
-color = 0.5 * [1,1,1];
+color1 = 0.3 * [1,1,1];
+color2 = 0.5 * [1,1,1];
 
 ax = linspace(U.n2a_a0(nr,a0(1)), U.n2a_a0(nr, a0(end)));
 ay = pda.pdf(ax);
@@ -60,8 +61,8 @@ ay = k*ay + nr;
 plot([nr nr], ax([1 end]),  'k:');
 
 i = ax >= ar;
-h = fill([ay(i) nr], [ax(i) ar], color);
-h.FaceAlpha = 0.7;
+h = fill([ay(i) nr], [ax(i) ar], color1);
+h.FaceAlpha = 0.8;
 h.LineStyle = 'none';
 plot(ay, ax, 'k');
 
@@ -72,8 +73,8 @@ ny = k*ny+ar;
 plot(nx([1 end]), [ar ar], 'k:');
 
 i = nx <= nr;
-h = fill([nx(i) nr], [ny(i) ar], color);
-h.FaceAlpha = 0.7;
+h = fill([nx(i) nr], [ny(i) ar], color2);
+h.FaceAlpha = 0.8;
 h.LineStyle = 'none';
 plot(nx, ny, 'k');
 

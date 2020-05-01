@@ -1,15 +1,8 @@
-start_tic = tic;
-% close all but one figure, or creat one if none is there.
-h = get(groot, 'Children');
-if length(h) > 1
-    i = ([h.Number] == 1);
-    close(h(~i)); h = h(i);
-end
-clf(h);
+get_ready(false);
 
 load spectrum.mat
 
-group = {[1 2], [6 7], [3 4 5]};
+group = {[1 2 6 7], [3 4 5]};
 name = {"A", "B", "C", "D", "E", "F", "G"};
 lt = {"k-", "k-.", "k--", "k:"};
 
@@ -22,16 +15,28 @@ for i = 1:length(group)
     end
     legend(name{group{i}});
 
-    set(gca, 'XScale', 'log');
+    h = gca;
+    h.XScale = 'log';
+    h.XMinorGrid = 'off';
+    h.YMinorGrid = 'off';
+    
     xlim([10 1e7]);
     xlabel('cumulative numbers');
     xticks(10.^(1:7))
     ylim([10 80]);
     yticks(20:10:80);
     ylabel('stress/MPa');
+    
+    grid off;
+    box off;
+    h = findobj(groot, 'Type', 'legend');
+    set(h, 'Box', 'off');
+    
+    print(strcat('sp', name{group{i}}), '-depsc');
+    savefig(strcat('sp', name{group{i}}));
 end
 
-group = {[1 2], [3 5], 4};
+group = {[1 2 6 7], [3 5], 4};
 for i = 1:length(group)
     figure;
     sp = numbers(:, group{i});
@@ -44,6 +49,13 @@ for i = 1:length(group)
     xticks(20:5:50);
     ylabel('numbers');
     xlabel('stress/MPa');
+    
+    h = gca;
+    h.XMinorGrid = 'off';
+    h.YMinorGrid = 'off';
+    
+    
+    print(strcat('ht', name{group{i}}), '-depsc');
 end
 
-fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
+end_up(mfilename, {});

@@ -1,6 +1,6 @@
 function [ shp, scl, loc ] = wblpwm( x )
 %WBLPWM [ shp, scl, loc ] = wblpwm( x )
-% Reffrence:
+% Reference:
 %   Hosking, J. R. M., Wallis, J. R., and Wood, E. F. (1985).
 %   Estimation of the generalized extreme-value distribution by the method
 %   of probability-weighted moments. Technometrics, 27:251¨C261.
