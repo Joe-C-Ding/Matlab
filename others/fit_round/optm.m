@@ -1,7 +1,7 @@
 get_ready();
 %%
 load data
-fix = false;
+fix = true;
 if fix
     ind = centered(:,2) == 0;
     centered(ind,1) = 37;
