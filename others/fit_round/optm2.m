@@ -14,8 +14,8 @@ p1 = -10;
 p2 = 20;
 p3 = x(end);
 
-% [r,fval,exitflag,output] = fminsearch(@(r)lossb(r, base), [p1, p2])
-[r,fval,exitflag,output] = fminsearch(@(r)lossb(r, base), [p0, p1, p2, p3])
+[r,fval,exitflag,output] = fminsearch(@(r)lossb(r, base), [p1, p2])
+% [r,fval,exitflag,output] = fminsearch(@(r)lossb(r, base), [p0, p1, p2, p3])
 
 [l, p_calc, y_calc] = lossb(r, base);
 plot(p_calc(:,1), p_calc(:,2));
