@@ -29,7 +29,7 @@ else
     bezier2 = r;
 end
 
-save('data', 'bezier4', 'bezier2', '-append');
+% save('data', 'bezier4', 'bezier2', '-append');
 
 %%
 end_up(mfilename);
