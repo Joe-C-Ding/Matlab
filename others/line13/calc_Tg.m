@@ -31,8 +31,8 @@ xticks(norminv(xt));
 xticklabels(strsplit(num2str(xt, '%g\n')));
 xlim(norminv([0.001 0.99]))
 
-ylabel('$\sigma/\sigma_{0.5}$')
-xlabel('failure/\%')
+ylabel('$r=\sigma/\sigma_{0.5}$')
+xlabel('failure, $F$/\%')
 
 for i = 1:length(F)
     ht = text(norminv(F(i))+0.2, Q(i), sprintf('(%g, %.3f)', F(i), Q(i)));
