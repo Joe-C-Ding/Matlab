@@ -1,7 +1,7 @@
 get_ready();
 %%
 Tg = 1.5;
-m = 3.5;
+m = 5;
 
 f = 5 / 1344;
 stress = 89.4;
@@ -40,5 +40,6 @@ df_l = makedist('logn', mu_l, sg_l);
 cov = df_l.std / df_l.mean
 cov_ = sg_l / mu_l
 
+df_l.cdf((40:20:300).')
 %%
 end_up(mfilename);
