@@ -40,6 +40,7 @@ df_l = makedist('logn', mu_l, sg_l);
 cov = df_l.std / df_l.mean
 cov_ = sg_l / mu_l
 
-df_l.cdf((40:20:300).')
+df_l.cdf([(160:40:280).', (160:60:360).'])
+
 %%
 end_up(mfilename);
