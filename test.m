@@ -1,15 +1,23 @@
-get_ready();
+get_ready()
 
 %%
-k = 0.1;
-N = 100;
+findpeaks
+t = linspace(-2 * pi, 2 * pi, 1000);
+phi = deg2rad(10);
 
-x = exprnd(20, N, 1);
-e = normrnd(0, 1, N, 1);
-y = k * x + 1000 + e;
+s = sin(t + phi);
+c = cos(t);
 
-scatter(x, y);
-r = corr(x, y)
+% plot(t, s, t, c);
+
+space = (t(end) - t(1)) / length(t);
+shift = floor(0.5 * pi / space);
+
+[corr, lag] = xcorr(s, c(shift:end));
+plot(lag, corr);
+
+[corr, lag] = xcorr(s, c);
+plot(lag+shift, corr, 'r');
 
 %%
 end_up(mfilename)

@@ -2,7 +2,7 @@ function F = Sn( t, pond, show_procese )
 %SN F = Sn( t, pond, show_procese )
 %   Detailed explanation goes here
 warn_save = warning;
-warning('off', 'MATLAB:integral2:maxFunEvalsFail');
+warning('off');
 
 narginchk(2, 3);
 if nargin < 3
@@ -11,7 +11,7 @@ end
 
 F_start = tic;
 global Du;
-a0 = 5;
+a0 = 2;
 as0 = eps;
 F = zeros(numel(t), 2);
 
@@ -43,11 +43,19 @@ for i = 3:n
     end
 end
 Sn = cumsum(Sn);
+
 if show_procese
-    delete(hbar);
+    close(hbar);
 end
 
-for i = 1:numel(t)
+m = numel(t);
+
+if show_procese
+    msg = sprintf('Calculating Fn [%%d / %d] ... %%3.2f s', m);
+    hbar = waitbar(0, sprintf(msg, 0, etime(clock(), sn_start)));
+end
+
+for i = 1:m
     n = floor(t(i)/tt(1));
     switch n
         case 0
@@ -62,6 +70,13 @@ for i = 1:numel(t)
                 + [integral2(@(x, y)f1(x, y, n+1, t(i), a0), 0, Du, 0, @(y)y) ...
                 integral2(@(x, y)f2(x, y, n+1, t(i), a0), 0, Du, 0, @(y)y)];
     end
+    if show_procese
+        waitbar(i/m, hbar, sprintf(msg, i, etime(clock(), sn_start)));
+    end
+end
+
+if show_procese
+    close(hbar);
 end
 
 toc(F_start);

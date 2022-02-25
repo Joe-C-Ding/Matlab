@@ -36,7 +36,7 @@ while 1
         if (isempty(idx) || idx == 1)
             break;
         end
-    end;
+    end
     pau = au; pal = al;
     au = x(idx); al = x(idx-1);
     if (au == pau) && (al == pal)

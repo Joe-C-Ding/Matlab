@@ -2,9 +2,9 @@ get_ready(false);
 
 load spectrum.mat
 
-group = {[1 2 6 7], [3 4 5]};
+group = {[1 2 3 4 5 6 7],};% [3 4 5]};
 name = {"A", "B", "C", "D", "E", "F", "G"};
-lt = {"k-", "k-.", "k--", "k:"};
+lt = {"b-.", "b-", "r-", "c-", "m-", "g-", "g-."};
 
 for i = 1:length(group)
     figure;
@@ -36,26 +36,26 @@ for i = 1:length(group)
     savefig(strcat('sp', name{group{i}}));
 end
 
-group = {[1 2 6 7], [3 5], 4};
-for i = 1:length(group)
-    figure;
-    sp = numbers(:, group{i});
-    for j = 1:length(group{i})
-        plot(stress, sp(:,j), lt{j});
-    end
-    legend(name{group{i}});
-
-    xlim([20 50]);
-    xticks(20:5:50);
-    ylabel('numbers');
-    xlabel('stress/MPa');
-    
-    h = gca;
-    h.XMinorGrid = 'off';
-    h.YMinorGrid = 'off';
-    
-    
-    print(strcat('ht', name{group{i}}), '-depsc');
-end
+% group = {[1 2 6 7], [3 5], 4};
+% for i = 1:length(group)
+%     figure;
+%     sp = numbers(:, group{i});
+%     for j = 1:length(group{i})
+%         plot(stress, sp(:,j), lt{j});
+%     end
+%     legend(name{group{i}});
+% 
+%     xlim([20 50]);
+%     xticks(20:5:50);
+%     ylabel('numbers');
+%     xlabel('stress/MPa');
+%     
+%     h = gca;
+%     h.XMinorGrid = 'off';
+%     h.YMinorGrid = 'off';
+%     
+%     
+%     print(strcat('ht', name{group{i}}), '-depsc');
+% end
 
 end_up(mfilename, {});

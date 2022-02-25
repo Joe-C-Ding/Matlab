@@ -1,27 +1,26 @@
 start_tic = tic;
+clf;
 
-file = 'rainflow/other/QYcycles_200.xlsx';
-[pathstr,name,ext] = fileparts(file);
+global Du a b l diameter interval POD;
+Du = 3;
+diameter = 1e10 / pi;
+interval = 100e4;
 
-if ~isempty(regexpi(name, 'rainflow'))
-    type = 1;
-elseif ~isempty(regexpi(name, 'QY'))
-    type = 2;
-end
+a = 4.8619247030663174e-05;
+b = 0.9999972829054025;
+l = 104.71435163732492;
 
-if type == 1
-    A = zeros(300,2,14);
-    for j = 1:14
-        A(:,:,j) = xlsread(file, j);
-    end
-    save([pathstr '/' name '.mat'], 'A', '-append');
-    
-elseif type == 2
-    QY = zeros(241, 241, 2);
-    QY(:,:,1) = xlsread(file,1);
-    QY(:,:,2) = xlsread(file,2);
-    
-    save([pathstr '/' name '.mat'], 'QY', '-append');
-end
+POD = xlsread('POD.xls', 2);
+
+phi = @(x) 0.5 + 0.5*erf( x / sqrt(2) );
+
+
+t = linspace(0, 1e7, 30);
+F = Sn(t, @pond, 1)
+plot(t, F);
+
+ax = gca;
+ax.YScale = 'log';
+ylim([1e-40, 1]);
 
 fprintf('%s elapsed: %f s\n', mfilename, toc(start_tic));
